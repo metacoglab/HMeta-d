@@ -1,0 +1,84 @@
+% Loops over analysis.m for different subjects
+%
+% SF 2012
+
+clear all
+close all
+
+cwd = pwd;
+
+root_direc = '/Users/sfleming/Dropbox/Research/Metacognition/VBM/Behaviour/Data/';
+
+subjects = { ...
+    'hb', 1,1,6;
+    'an',2,1,6;
+    'am',3,1,6;
+    'pw',4,1,6;
+    'cm',5,1,6;
+    'wa',8,1,6;
+    'sr',9,1,6;
+    'js',10,1,6;
+    'rm',11,1,6;
+    'ec',12,1,6;
+    'ob',14,1,6;
+    'tg',15,1,6;
+    'so',16,1,6;
+    'rg',17,1,6;
+    'cb',18,1,6;
+    'ak',19,1,6;
+    'md',20,1,6;
+    'kc',20,1,6;
+    % 'cb',22,1,6;
+    'hb',21,1,6;
+    'kj', 24,1,6;
+    'ms',23,1,6;
+    'gp',25,1,6;
+    'sb',26,1,6;
+    'im',27,1,6;
+    % 'km',28,1,6;
+    'sm',29,1,6;
+    'rr',30,1,6;
+    'js',31,1,6;
+    'cy',32,1,6;
+    'js',33,1,6;
+    'mk',34,1,6;
+    'em',35,1,6;
+    'lj',36,1,6;
+    };
+
+all_dataframe = [];
+
+for i = 1:length(subs)
+    
+    subj_direc=[root_direc subjects{subNo,1} '_' num2str(subjects{subNo,2})  '_' num2str(subjects{subNo,3})];
+    cd (subj_direc)
+    
+    datafile = ['metacog_sub_' subjects{subNo,1} '_' num2str(subjects{subNo,2}) '_' num2str(subjects{subNo,3}) '_' num2str(subjects{subNo,4})];
+    load(datafile)
+    
+%     nblock = DATA.stim.nblock;
+    ntrials = DATA.stim.ntrials;
+    nblock = 5;
+    start = 2;
+    finish = 6;
+    
+    typeIcode = reshape(DATA.responses.typeI.code(start:finish,:)',nblock*ntrials,1);
+    typeIIcon = reshape(DATA.responses.typeII.con(start:finish,:)',nblock*ntrials,1);
+    typeIRT = reshape(DATA.responses.typeI.RT(start:finish,:)',nblock*ntrials,1);
+    typeIIRT = reshape(DATA.responses.typeII.RT(start:finish,:)',nblock*ntrials,1);
+    
+    stimID = (typeIcode == 1 | typeIcode == 3); % S1 presented
+    response = typeIcode < 3;   % S1 response
+    rating = typeIIcon;
+    nrating = 6;
+    
+    dataframe = [ones(length(response),1).*i stimID response rating];
+    all_dataframe = [all_dataframe; dataframe]
+end
+all_dataframe = [[ones(length(v_dataframe),1).*1; ones(length(exp_dataframe),1).*2] [v_dataframe; exp_dataframe]];
+
+cd jags
+save v_data.txt v_dataframe -ascii
+save exp_data.txt exp_dataframe -ascii
+save all_data.txt all_dataframe -ascii
+cd(pwd);
