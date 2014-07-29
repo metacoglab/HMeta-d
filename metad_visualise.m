@@ -1,10 +1,10 @@
 % Visualisation and diagnostics for meta-d' fit object generated either by
-% MLE or MCMC
+% HMM toolbox
 %
 % SF 2014
 
 %% Observed and expected type 2 ROCs for S1 and S2 responses
-h1 = figure;
+h1 = figure(1);
 set(gcf, 'Position', [500 500 1000 1000]);
 
 subplot(2,2,1);
@@ -51,4 +51,27 @@ xlabel('z(FAR2)');
 axis square
 box off
 
-%% Relative placement of criteria and signal distributions
+%% Plot posteriors for parameters
+h2 = figure(2);
+maxSamp = [];
+subplot(1,2,1);
+for i = 1:length(fit.t2ca_rS1)
+    [n x] = hist(fit.mcmc.samples.cS1(1,:,i));
+    bar(x, n, 'edgecolor','b','facecolor',[1 1 1]);
+    hold on
+    maxSamp = [maxSamp max(n)];
+end
+for i = 1:length(fit.t2ca_rS2)
+    [n x] = hist(fit.mcmc.samples.cS2(1,:,i));
+    bar(x, n, 'edgecolor','b','facecolor',[1 1 1]);
+    hold on
+    maxSamp = [maxSamp max(n)];
+end
+xlabel('c_2');
+ylabel('samples');
+
+subplot(1,2,2);
+[n x] = hist(fit.mcmc.samples.meta_d(1,:));
+bar(x, n, 'edgecolor','b','facecolor',[1 1 1]);
+xlabel('meta-d''');
+ylabel('samples');
