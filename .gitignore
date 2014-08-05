@@ -8,4 +8,9 @@
 ehthumbs.db
 Thumbs.db
 
+# Matlab ignore
+*.m~
+*.asv
+
+# Project ignore
 /tmpjags
