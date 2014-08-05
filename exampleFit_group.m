@@ -13,7 +13,7 @@ c2 = [0.5 1 1.5];
 
 group_d = 2;
 sigma = 0.5;
-noise = 0;
+noise = 0.2;
 
 for i = 1:Nsub
         
@@ -32,5 +32,18 @@ end
 fit = fit_meta_d_mcmc_group(nR_S1, nR_S2);
 
 % Make some plots
-figure; scatter(d, fit.meta_da);
-figure; plot(fit.mcmc.samples.mu_Mratio');
+figure; 
+set(gcf, 'Units', 'normalized');
+set(gcf, 'Position', [0.2 0.2 0.5 0.4]);
+subplot(1,2,1);
+plot(d, fit.meta_da, 'o ', 'LineWidth', 2, 'MarkerSize', 8);
+xlabel('d''');
+ylabel('meta-d''');
+axis square
+box off
+
+subplot(1,2,2);
+plot(fit.mcmc.samples.mu_Mratio');
+xlabel('Sample');
+ylabel('meta-d/d');
+box off

@@ -5,7 +5,8 @@
 
 %% Observed and expected type 2 ROCs for S1 and S2 responses
 h1 = figure(1);
-set(gcf, 'Position', [500 500 1000 1000]);
+set(gcf, 'Units', 'normalized');
+set(gcf, 'Position', [0.2 0.2 0.5 0.5]);
 
 subplot(2,2,1);
 plot(fit.obs_FAR2_rS1, fit.obs_HR2_rS1, 'ko-','linewidth',1.5,'markersize',12);
@@ -53,8 +54,22 @@ box off
 
 %% Plot posteriors for parameters
 h2 = figure(2);
+set(gcf, 'Units', 'normalized');
+set(gcf, 'Position', [0.2 0.2 0.7 0.3]);
 maxSamp = [];
-subplot(1,2,1);
+
+subplot(1,3,1);
+[n x] = hist(fit.mcmc.samples.meta_d(:));
+bar(x, n, 'edgecolor','b','facecolor',[1 1 1]);
+xlabel('meta-d''');
+ylabel('samples');
+
+subplot(1,3,2);
+plot(fit.mcmc.samples.meta_d');
+xlabel('Sample');
+ylabel('meta-d');
+
+subplot(1,3,3);
 for i = 1:length(fit.t2ca_rS1)
     [n x] = hist(fit.mcmc.samples.cS1(1,:,i));
     bar(x, n, 'edgecolor','b','facecolor',[1 1 1]);
@@ -70,8 +85,3 @@ end
 xlabel('c_2');
 ylabel('samples');
 
-subplot(1,2,2);
-[n x] = hist(fit.mcmc.samples.meta_d(1,:));
-bar(x, n, 'edgecolor','b','facecolor',[1 1 1]);
-xlabel('meta-d''');
-ylabel('samples');

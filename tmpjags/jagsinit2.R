@@ -1,5 +1,7 @@
-"meta.d" <-
-2.20117
+"mu.Mratio" <-
+1
+"lambda.Mratio" <-
+0.5
 "cS1.raw" <-
 c(-1, -0.6, -0.2, 0.2)
 "cS2.raw" <-
