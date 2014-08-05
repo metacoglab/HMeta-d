@@ -6,7 +6,7 @@ Hierarchical meta-d' model
 Steve Fleming
 sf102@nyu.edu
 
-The libraries in this package implement the meta-d’ model (Maniscalco & Lau, 2012) in a hierarchical Bayesian framework using Matlab and JAGS, a program for conducting MCMC inference on arbitrary Bayesian models. A paper on the advantages of estimating meta-d’ in a hierarchal Bayesian framework is in preparation. For a more general introduction to Bayesian models of cognition see Lee & Wagenmakers, Bayesian Cognitive Modeling: A Practical Course http://bayesmodels.com/
+This toolbox implements the meta-d’ model (Maniscalco & Lau, 2012) in a hierarchical Bayesian framework using Matlab and JAGS, a program for conducting MCMC inference on arbitrary Bayesian models. A paper on the advantages of estimating meta-d’ in a hierarchal Bayesian framework is in preparation. For a more general introduction to Bayesian models of cognition see Lee & Wagenmakers, Bayesian Cognitive Modeling: A Practical Course http://bayesmodels.com/
 
 The code is designed to work “out of the box” without much coding on the part of the user, and it receives data in the same format as Maniscalco & Lau’s toolbox, allowing easy switching and comparison between the two.
 
