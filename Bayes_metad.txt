@@ -1,9 +1,9 @@
 # Bayesian estimation of meta-d’ for a single subject
 
 model {
-# Transformed outputs
-Mratio <- meta_d/d1
-Mdiff <- meta_d-d1
+# Transformed outputs (now computed outside the model as d1 is a constant)
+# Mratio <- meta_d/d1
+# Mdiff <- meta_d-d1
 
 # Multinomial likelihood for response counts ordered as c(nR_S1,nR_S2)
 counts ~ dmulti(prT,nTot)
