@@ -26,7 +26,8 @@ function fit = fit_meta_d_mcmc(nR_S1, nR_S2, mcmc_params, s, fncdf, fninv)
 %
 % * nR_S1, nR_S2
 % these are vectors containing the total number of responses in
-% each response category, conditional on presentation of S1 and S2.
+% each response category, conditional on presentation of S1 and S2. S1
+% responses are always listed first, followed by S2 responses.
 %
 % e.g. if nR_S1 = [100 50 20 10 5 1], then when stimulus S1 was
 % presented, the subject had the following response counts:
@@ -36,6 +37,15 @@ function fit = fit_meta_d_mcmc(nR_S1, nR_S2, mcmc_params, s, fncdf, fninv)
 % responded S2, rating=1 : 10 times
 % responded S2, rating=2 : 5 times
 % responded S2, rating=3 : 1 time
+%
+% and if nR_S2 = [2 6 9 18 40 110], then when stimulus S2 was
+% presented, the subject had the following response counts:
+% responded S1, rating=3 : 2 times
+% responded S1, rating=2 : 6 times
+% responded S1, rating=1 : 9 times
+% responded S2, rating=1 : 18 times
+% responded S2, rating=2 : 40 times
+% responded S2, rating=3 : 110 times
 %
 % * s
 % this is the ratio of standard deviations for type 1 distributions, i.e.
@@ -122,6 +132,8 @@ function fit = fit_meta_d_mcmc(nR_S1, nR_S2, mcmc_params, s, fncdf, fninv)
 
 if ~mod(length(nR_S1),2)==0, error('input arrays must have an even number of elements'); end
 if length(nR_S1)~=length(nR_S2), error('input arrays must have the same number of elements'); end
+% Check and pad zeros if necessary (until fix found for dmulti issue)
+if any(nR_S1 < 1) | any(nR_S2 < 1), error('input arrays contain zeros; consider padding your data with 1s'); end
 
 if ~exist('s','var') || isempty(s)
     s = 1;
@@ -182,7 +194,8 @@ datastruct = struct('counts', counts, 'd1', d1, 'c', c1, 'nratings', nRatings, '
 switch mcmc_params.response_conditional
     case 0
         model_file = 'Bayes_metad.txt';
-        monitorparams = {'Mratio','Mdiff','meta_d','cS1','cS2'};
+%         monitorparams = {'Mratio','Mdiff','meta_d','cS1','cS2'};
+        monitorparams = {'meta_d','cS1','cS2'};
         
     case 1
         model_file = 'Bayes_metad_rc.txt';
@@ -243,8 +256,10 @@ switch mcmc_params.response_conditional
     case 0
         
         fit.meta_da   = sqrt(2/(1+s^2)) * s * stats.mean.meta_d;
-        fit.M_diff    = stats.mean.Mdiff;
-        fit.M_ratio   = stats.mean.Mratio;
+%         fit.M_diff    = stats.mean.Mdiff;
+%         fit.M_ratio   = stats.mean.Mratio;
+        fit.M_diff = stats.mean.meta_d - fit.da;
+        fit.M_ratio = stats.mean.meta_d/fit.da;
         
         %% find estimated t2FAR and t2HR
         meta_d = stats.mean.meta_d;
