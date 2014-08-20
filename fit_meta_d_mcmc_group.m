@@ -260,6 +260,12 @@ end
 fit.da        = sqrt(2/(1+s^2)) .* s .* d1;
 fit.s         = s;
 fit.meta_ca   = ( sqrt(2).*s ./ sqrt(1+s.^2) ) .* c1;
+
+if isrow(stats.mean.cS1)
+    stats.mean.cS1 = stats.mean.cS1';
+    stats.mean.cS2 = stats.mean.cS2';
+end
+    
 fit.t2ca_rS1  = ( sqrt(2).*s ./ sqrt(1+s.^2) ) .* stats.mean.cS1;
 fit.t2ca_rS2  = ( sqrt(2).*s ./ sqrt(1+s.^2) ) .* stats.mean.cS2;
 

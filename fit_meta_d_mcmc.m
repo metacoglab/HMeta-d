@@ -4,7 +4,7 @@ function fit = fit_meta_d_mcmc(nR_S1, nR_S2, mcmc_params, s, fncdf, fninv)
 % Given data from an experiment where an observer discriminates between two
 % stimulus alternatives on every trial and provides confidence ratings,
 % fits Maniscalco & Lau's meta-d' model to the data using MCMC implemented in
-% JAGS. Requires matjags and JAGS to be installed
+% JAGS. Requires JAGS to be installed
 % (see http://psiexp.ss.uci.edu/research/programs_data/jags/)
 %
 % For more information on the model please see:

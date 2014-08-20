@@ -1,5 +1,5 @@
 load dic
-model in "/Users/sfleming/Documents/HMM/Bayes_metad_group.txt"
+model in "/Users/stevefleming/Documents/Repositories/HMM/Bayes_metad_group.txt"
 data in jagsdata.R
 compile, nchains(1)
 parameters in jagsinit3.R
