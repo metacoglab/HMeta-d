@@ -1,0 +1,142 @@
+# Bayesian estimation of meta-d’ for a multiple subjects for two tasks, and also 
+# estimating the correlation between meta-d' within a subject across the tasks
+# Megan Peters September 2014: extended Steve Fleming's toolbox to include correlation
+
+model {
+  for (s in 1:nsubj) {
+  	
+
+		# Multinomial likelihood for response counts ordered as c(nR_S1,nR_S2)
+		counts[s,,1] ~ dmulti(prT[s,,1],nTot[s,1])
+		counts[s,,2] ~ dmulti(prT[s,,2],nTot[s,2])
+
+		# Means of SDT distributions
+		mu[s,1] <- Mratio[s,1]*d1[s,1]
+		mu[s,2] <- Mratio[s,2]*d1[s,2]
+
+		S2mu[s,1] <- mu[s,1]/2
+		S1mu[s,1] <- -mu[s,1]/2
+		S2mu[s,2] <- mu[s,2]/2
+		S1mu[s,2] <- -mu[s,2]/2
+
+
+		# Calculate normalisation constants
+		C_area_rS1[s,1] <- phi(c[s,1] - S1mu[s,1])
+		I_area_rS1[s,1] <- phi(c[s,1] - S2mu[s,1])
+		C_area_rS2[s,1] <- 1-phi(c[s,1] - S2mu[s,1])
+		I_area_rS2[s,1] <- 1-phi(c[s,1] - S1mu[s,1])
+
+		C_area_rS1[s,2] <- phi(c[s,2] - S1mu[s,2])
+		I_area_rS1[s,2] <- phi(c[s,2] - S2mu[s,2])
+		C_area_rS2[s,2] <- 1-phi(c[s,2] - S2mu[s,2])
+		I_area_rS2[s,2] <- 1-phi(c[s,2] - S1mu[s,2])
+
+		##########
+
+		# Get nC_rS1 probs for first task
+		# Start with the highest confidence rating count
+		pr[s,1,1] <- phi(cS1[s,1,1] - S1mu[s,1])/C_area_rS1[s,1]
+		# Deal with the rest of the intermediate confidence ratings  
+		for (k in 1:nratings-2) {                
+  			pr[s,k+1,1] <- (phi(cS1[s,k+1,1] - S1mu[s,1])-phi(cS1[s,k,1] - S1mu[s,1]))/C_area_rS1[s,1]
+		}
+		# Fill in the last confidence rating count
+		pr[s,nratings,1] <- (phi(c[s,1] - S1mu[s,1])-phi(cS1[s,nratings-1,1] - S1mu[s,1]))/C_area_rS1[s,1]   
+
+		# Get nC_rS1 probs for second task
+		# Start with the highest confidence rating count
+		pr[s,1,2] <- phi(cS1[s,1,2] - S1mu[s,2])/C_area_rS1[s,2]
+		# Deal with the rest of the intermediate confidence ratings  
+		for (k in 1:nratings-2) {                
+  			pr[s,k+1,2] <- (phi(cS1[s,k+1,2] - S1mu[s,2])-phi(cS1[s,k,2] - S1mu[s,2]))/C_area_rS1[s,2]
+		}
+		# Fill in the last confidence rating count
+		pr[s,nratings,2] <- (phi(c[s,2] - S1mu[s,2])-phi(cS1[s,nratings-1,2] - S1mu[s,2]))/C_area_rS1[s,2]  
+
+		###########
+
+		# Get nI_rS2 probs
+		pr[s,nratings+1,1] <- ((1-phi(c[s,1] - S1mu[s,1]))-(1-phi(cS2[s,1,1] - S1mu[s,1])))/I_area_rS2[s,1]
+		for (k in 1:nratings-2) {                
+  			pr[s,nratings+1+k,1] <- ((1-phi(cS2[s,k,1] - S1mu[s,1]))-(1-phi(cS2[s,k+1,1] - S1mu[s,1])))/I_area_rS2[s,1]
+		}
+		pr[s,nratings*2,1] <- (1-phi(cS2[s,nratings-1,1] - S1mu[s,1]))/I_area_rS2[s,1]
+
+		# Get nI_rS2 probs
+		pr[s,nratings+1,2] <- ((1-phi(c[s,2] - S1mu[s,2]))-(1-phi(cS2[s,1,2] - S1mu[s,2])))/I_area_rS2[s,2]
+		for (k in 1:nratings-2) {                
+  			pr[s,nratings+1+k,2] <- ((1-phi(cS2[s,k,2] - S1mu[s,2]))-(1-phi(cS2[s,k+1,2] - S1mu[s,2])))/I_area_rS2[s,2]
+		}
+		pr[s,nratings*2,2] <- (1-phi(cS2[s,nratings-1,2] - S1mu[s,2]))/I_area_rS2[s,2]
+
+		###########
+
+		# Get nI_rS1 probs
+		pr[s,(nratings*2)+1,1] <- phi(cS1[s,1,1] - S2mu[s,1])/I_area_rS1[s,1]
+		for (k in 1:nratings-2) {
+  			pr[s,(nratings*2)+1+k,1] <- (phi(cS1[s,k+1,1] - S2mu[s,1])-phi(cS1[s,k,1] - S2mu[s,1]))/I_area_rS1[s,1]
+		}
+		pr[s,nratings*3,1] <- (phi(c[s,1] - S2mu[s,1])-phi(cS1[s,nratings-1,1] - S2mu[s,1]))/I_area_rS1[s,1]
+
+		# Get nI_rS1 probs
+		pr[s,(nratings*2)+1,2] <- phi(cS1[s,1,2] - S2mu[s,2])/I_area_rS1[s,2]
+		for (k in 1:nratings-2) {
+  			pr[s,(nratings*2)+1+k,2] <- (phi(cS1[s,k+1,2] - S2mu[s,2])-phi(cS1[s,k,2] - S2mu[s,2]))/I_area_rS1[s,2]
+		}
+		pr[s,nratings*3,2] <- (phi(c[s,2] - S2mu[s,2])-phi(cS1[s,nratings-1,2] - S2mu[s,2]))/I_area_rS1[s,2]
+
+
+		###########
+
+		# Get nC_rS2 probs
+		pr[s,(nratings*3)+1,1] <- ((1-phi(c[s,1] - S2mu[s,1]))-(1-phi(cS2[s,1,1] - S2mu[s,1])))/C_area_rS2[s,1]
+		for (k in 1:nratings-2) {                
+  			pr[s,(nratings*3)+1+k,1] <- ((1-phi(cS2[s,k,1] - S2mu[s,1]))-(1-phi(cS2[s,k+1,1] - S2mu[s,1])))/C_area_rS2[s,1]
+		}
+		pr[s,nratings*4,1] <- (1-phi(cS2[s,nratings-1,1] - S2mu[s,1]))/C_area_rS2[s,1]
+
+		# Get nC_rS2 probs
+		pr[s,(nratings*3)+1,2] <- ((1-phi(c[s,2] - S2mu[s,2]))-(1-phi(cS2[s,1,2] - S2mu[s,2])))/C_area_rS2[s,2]
+		for (k in 1:nratings-2) {                
+  			pr[s,(nratings*3)+1+k,2] <- ((1-phi(cS2[s,k,2] - S2mu[s,2]))-(1-phi(cS2[s,k+1,2] - S2mu[s,2])))/C_area_rS2[s,2]
+		}
+		pr[s,nratings*4,2] <- (1-phi(cS2[s,nratings-1,2] - S2mu[s,2]))/C_area_rS2[s,2]
+
+		###########
+
+			# Avoid underflow of probabilities
+			for (i in 1:nratings*4) {
+  				prT[s,i,1] <- ifelse(pr[s,i,1] < Tol, Tol, pr[s,i,1])
+  				prT[s,i,2] <- ifelse(pr[s,i,2] < Tol, Tol, pr[s,i,2])
+			}
+
+			# Specify ordered prior on criteria (bounded above and below by Type 1 c) 
+			for (j in 1:nratings-1) {
+  				cS1_raw[s,j,1] ~ dnorm(0,2) I(,c[s,1]-Tol)
+  				cS2_raw[s,j,1] ~ dnorm(0,2) I(c[s,1]+Tol,)
+
+				cS1_raw[s,j,2] ~ dnorm(0,2) I(,c[s,2]-Tol)
+  				cS2_raw[s,j,2] ~ dnorm(0,2) I(c[s,2]+Tol,)
+			}
+			cS1[s,1:nratings-1,1] <- sort(cS1_raw[s,,1])
+			cS2[s,1:nratings-1,1] <- sort(cS2_raw[s,,1])
+
+			cS1[s,1:nratings-1,2] <- sort(cS1_raw[s,,2])
+			cS2[s,1:nratings-1,2] <- sort(cS2_raw[s,,2])
+
+
+		Mratio[s,1] ~ dnorm(mu_Mratio, lambda_Mratio)	
+        diff[s] ~ dnorm(mu_diff, lambda_diff)
+		Mratio[s,2] <- Mratio[s,1] + diff[s]
+		
+	}
+	
+  	# hyperpriors on Mratio
+	mu_Mratio ~ dunif(0,4)
+	lambda_Mratio ~ dgamma(0.001,0.001)
+    # hyperprior on difference
+    mu_diff ~ dnorm(0,0.25)
+    lambda_diff ~ dgamma(0.001,0.001)
+
+	  
+}

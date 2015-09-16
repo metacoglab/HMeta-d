@@ -1,4 +1,4 @@
-function fit = fit_meta_d_mcmc_group_grpind(nR_S1, nR_S2, grpind, mcmc_params, s, fncdf, fninv)
+function fit = fit_meta_d_mcmc_group_twoGroups(nR_S1, nR_S2, grpind, mcmc_params, s, fncdf, fninv)
 % fit = fit_meta_d_mcmc_group(nR_S1, nR_S2, mcmc_params, s, fncdf, fninv)
 %
 % Given data from an experiment where observers discriminate between two
