@@ -218,7 +218,7 @@ datastruct = struct('nsubj',Nsubj,'counts', counts, 'd1', d1, 'c', c1, 'nratings
 %         model_file = 'Bayes_metad_rc_group.txt';
 %         monitorparams = {'mu_Mratio_rS1','mu_Mratio_rS2','lambda_Mratio_rS1','lambda_Mratio_rS2','Mratio_rS1','Mratio_rS2','cS1','cS2'};
 % end
-model_file = 'Bayes_metad_group_grpind.txt';
+model_file = 'Bayes_metad_group_twoGroups.txt';
 monitorparams = {'mu_Mratio','lambda_Mratio','mu_MratioG','lambda_MratioG','diff','MratioBaseline','Mratio','cS1','cS2'};
 
 
