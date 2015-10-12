@@ -4,7 +4,7 @@ HMM
 Hierarchical meta-d' model
 
 Steve Fleming
-sf102@nyu.edu
+stephen.fleming@ucl.ac.uk 
 
 This toolbox implements the meta-d’ model (Maniscalco & Lau, 2012) in a hierarchical Bayesian framework using Matlab and JAGS, a program for conducting MCMC inference on arbitrary Bayesian models. A paper on the advantages of estimating meta-d’ in a hierarchal Bayesian framework is in preparation. For a more general introduction to Bayesian models of cognition see Lee & Wagenmakers, Bayesian Cognitive Modeling: A Practical Course http://bayesmodels.com/
 
@@ -18,4 +18,4 @@ http://mcmc-jags.sourceforge.net/
 
 NB At present, when you run the model code you need to be in the same directory as the .txt files that contain the model code for JAGS (it’s not enough to add this directory to the path). This is annoying as usually you’d like to be in the same directory that contains your project data. A fix for this is in the pipeline.
 
-Please get in touch with your experiences with using the toolbox, and any bug reports or issues to me at sf102@nyu.edu
+Please get in touch with your experiences with using the toolbox, and any bug reports or issues to me at stephen.fleming@ucl.ac.uk 
