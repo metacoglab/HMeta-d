@@ -162,7 +162,7 @@ model {
 	}
 	
   	# hyperpriors on Mratio
-	mu_logMratio ~ dnorm(0,0.001)
+	mu_logMratio ~ dnorm(0,0.1)
 	lambda_logMratio ~ dgamma(0.001,0.001)
     # hyperprior on difference
     mu_diff ~ dnorm(0,0.25)

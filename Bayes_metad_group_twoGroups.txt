@@ -80,15 +80,15 @@ model {
 	cS2[s,1:nratings-1] <- sort(cS2_raw[s, ])
 
 	diff[s] ~ dnorm(mu_MratioG,lambda_MratioG)
-	MratioBaseline[s] ~ dnorm(mu_Mratio, lambda_Mratio)
+    log_MratioBaseline[s] ~ dnorm(mu_logMratio, lambda_logMratio)
+	MratioBaseline[s] <- exp(log_MratioBaseline[s])
 	Mratio[s] <- grpind[s]*diff[s] + MratioBaseline[s]
 
-	# Mratio[s] ~ dnorm(mu_Mratio, lambda_Mratio) + grpind[s] * dnorm(mu_MratioG,lambda_MratioG)	
 	}
 	
   	# hyperpriors on Mratio & group diffs (recall JAGS wants precision = 1/(SD^2) for dnorm)
-	mu_Mratio ~ dunif(0,4)
-	lambda_Mratio ~ dgamma(0.001,0.001)
+	mu_logMratio ~ dnorm(0,0.1)
+	lambda_logMratio ~ dgamma(0.001,0.001)
 	mu_MratioG ~ dnorm(0,0.25)
 	lambda_MratioG ~ dgamma(0.001,0.001)
   

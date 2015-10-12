@@ -91,9 +91,9 @@ model {
 	}
 	
   	# hyperpriors on Mratio
-	mu_logMratio_rS1 ~ dnorm(0,0.001)
+	mu_logMratio_rS1 ~ dnorm(0,0.1)
 	lambda_logMratio_rS1 ~ dgamma(0.001,0.001)
-	mu_logMratio_rS2 ~ dnorm(0,0.001)
+	mu_logMratio_rS2 ~ dnorm(0,0.1)
 	lambda_logMratio_rS2 ~ dgamma(0.001,0.001)
 
 }
