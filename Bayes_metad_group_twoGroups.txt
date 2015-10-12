@@ -1,8 +1,29 @@
-# Bayesian estimation of meta-d’ for a single subject
+# Bayesian estimation of meta-d for two groups
+
+data {
+    for (s in 1:nsubj) {
+        # Type 1 counts
+        N[s] <- sum(counts[s,1:nratings*2])
+        S[s] <- sum(counts[s,(nratings*2)+1:nratings*4])
+        H[s] <- sum(counts[s,(nratings*3)+1:nratings*4])
+        FA[s] <- sum(counts[s,nratings+1:nratings*2])
+    }
+}
 
 model {
   for (s in 1:nsubj) {
-  	
+
+    ## TYPE 1 SDT BINOMIAL MODEL
+    H[s] ~ dbin(h[s],S[s])
+    FA[s] ~ dbin(f[s],N[s])
+    h[s] <- phi(d1[s]/2-c[s])
+    f[s] <- phi(-d1[s]/2-c[s])
+
+    # Type 1 priors
+    c[s] ~ dnorm(0, 2)
+    d1[s] ~ dnorm(0, 0.5)
+
+    ## TYPE 2 SDT MODEL (META-D)
 	# Multinomial likelihood for response counts ordered as c(nR_S1,nR_S2)
 	counts[s, ] ~ dmulti(prT[s, ],nTot[s])
 

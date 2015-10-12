@@ -1,11 +1,41 @@
-# Bayesian estimation of meta-d’ for a multiple subjects for two tasks, and also 
-# estimating the correlation between meta-d' within a subject across the tasks
-# Megan Peters September 2014: extended Steve Fleming's toolbox to include correlation
+# Bayesian estimation of meta-d' for multiple subjects for two tasks
+# edited by Megan Peters September 2014
+
+data {
+    for (s in 1:nsubj) {
+        # Type 1 counts
+        N[s,1] <- sum(counts[s,1:nratings*2,1])
+        S[s,1] <- sum(counts[s,(nratings*2)+1:nratings*4,1])
+        H[s,1] <- sum(counts[s,(nratings*3)+1:nratings*4,1])
+        FA[s,1] <- sum(counts[s,nratings+1:nratings*2,1])
+
+        N[s,2] <- sum(counts[s,1:nratings*2,2])
+        S[s,2] <- sum(counts[s,(nratings*2)+1:nratings*4,2])
+        H[s,2] <- sum(counts[s,(nratings*3)+1:nratings*4,2])
+        FA[s,2] <- sum(counts[s,nratings+1:nratings*2,2])
+    }
+}
 
 model {
   for (s in 1:nsubj) {
   	
+        ## TYPE 1 SDT BINOMIAL MODEL
+        H[s,1] ~ dbin(h[s,1],S[s,1])
+        FA[s,1] ~ dbin(f[s,1],N[s,1])
+        h[s,1] <- phi(d1[s,1]/2-c[s,1])
+        f[s,1] <- phi(-d1[s,1]/2-c[s,1])
+        H[s,2] ~ dbin(h[s,2],S[s,2])
+        FA[s,2] ~ dbin(f[s,2],N[s,2])
+        h[s,2] <- phi(d1[s,2]/2-c[s,2])
+        f[s,2] <- phi(-d1[s,2]/2-c[s,2])
 
+        # Type 1 priors
+        c[s,1] ~ dnorm(0, 2)
+        d1[s,1] ~ dnorm(0, 0.5)
+        c[s,2] ~ dnorm(0, 2)
+        d1[s,2] ~ dnorm(0, 0.5)
+
+        ## TYPE 2 SDT MODEL (META-D)
 		# Multinomial likelihood for response counts ordered as c(nR_S1,nR_S2)
 		counts[s,,1] ~ dmulti(prT[s,,1],nTot[s,1])
 		counts[s,,2] ~ dmulti(prT[s,,2],nTot[s,2])

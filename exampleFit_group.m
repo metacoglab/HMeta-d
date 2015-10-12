@@ -5,7 +5,7 @@
 clear all
 close all
 
-Ntrials = 1000;
+Ntrials = 100;
 Nsub = 10;
 c = 0;
 c1 = [-1.5 -1 -0.5];
@@ -36,7 +36,7 @@ figure;
 set(gcf, 'Units', 'normalized');
 set(gcf, 'Position', [0.2 0.2 0.5 0.4]);
 subplot(1,2,1);
-plot(d, fit.meta_da, 'o ', 'LineWidth', 2, 'MarkerSize', 8);
+plot(d, fit.meta_d, 'o ', 'LineWidth', 2, 'MarkerSize', 8);
 xlabel('d''');
 ylabel('meta-d''');
 axis square
