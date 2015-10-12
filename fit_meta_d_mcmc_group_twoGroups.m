@@ -54,7 +54,7 @@ end
 datastruct = struct('nsubj',Nsubj,'counts', counts, 'nratings', nRatings, 'nTot', nTot, 'Tol', 1e-05, 'grpind', grpind);
 
 model_file = 'Bayes_metad_group_twoGroups.txt';
-monitorparams = {'d1', 'c', 'mu_Mratio','lambda_Mratio','mu_MratioG','lambda_MratioG','diff','MratioBaseline','Mratio','cS1','cS2'};
+monitorparams = {'d1', 'c', 'mu_logMratio','lambda_logMratio','mu_MratioG','lambda_MratioG','diff','MratioBaseline','Mratio','cS1','cS2'};
 
 
 % Use JAGS to Sample
@@ -81,8 +81,9 @@ toc
 
 fit.d1 = stats.mean.d1;
 fit.c1 = stats.mean.c;
-fit.mu_Mratio = stats.mean.mu_Mratio;
-fit.lambda_Mratio = stats.mean.lambda_Mratio;
+fit.mu_logMratio = stats.mean.mu_logMratio;
+fit.mu_Mratio = exp(stats.mean.mu_logMratio);
+fit.lambda_logMratio = stats.mean.lambda_logMratio;
 fit.mu_MratioG = stats.mean.mu_MratioG;
 fit.lambda_MratioG = stats.mean.lambda_MratioG;
 fit.diff = stats.mean.diff;
