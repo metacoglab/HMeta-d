@@ -79,9 +79,6 @@ function fit = fit_meta_d_mcmc(nR_S1, nR_S2, mcmc_params, s, fncdf, fninv)
 %     mcmc_params.nthin = 1; % How Often is a Sample Recorded?
 %     mcmc_params.doparallel = 0; % Parallel Option
 %     mcmc_params.dic = 1;  % Save DIC
-%     mcmc_params.init0(1:nchains).meta_d = d1/2
-%     mcmc_params.init0(1:nchains).cS1_raw = linspace(-1,0.2,nRatings)
-%     mcmc_params.init0(1:nchains).cS2_raw = linspace(0.2,1,nRatings)
 %
 % To get meaningful Rhat estimates mcmc_params.init0 should be set at
 % different locations for each chain (see XX for more details)
@@ -106,7 +103,6 @@ function fit = fit_meta_d_mcmc(nR_S1, nR_S2, mcmc_params, s, fncdf, fninv)
 %
 % fit.mcmc.dic          = deviance information criterion (DIC) for model
 % fit.mcmc.Rhat    = Gelman & Rubin's Rhat statistic for each parameter
-% fit.mcmc.
 %
 % fit.obs_HR2_rS1  = actual type 2 hit rates for S1 responses
 % fit.est_HR2_rS1  = estimated type 2 hit rates for S1 responses
