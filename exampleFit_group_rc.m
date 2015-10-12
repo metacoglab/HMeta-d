@@ -23,6 +23,10 @@ for i = 1:Nsub
     % Generate data
     sim = type2_SDT_sim(d(i), noise, c, c1, c2, Ntrials);
     
+    % Avoid zero counts
+    sim.nR_S1(sim.nR_S1 == 0) = 1;
+    sim.nR_S2(sim.nR_S2 == 0) = 1;
+    
     nR_S1{i} = sim.nR_S1;
     nR_S2{i} = sim.nR_S2;
     

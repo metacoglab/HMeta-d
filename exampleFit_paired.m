@@ -5,8 +5,8 @@
 clear all
 close all
 
-Ntrials = 1000;
-Nsub = 10;
+Ntrials = 200;
+Nsub = 15;
 c = 0;
 c1 = [-1.5 -1 -0.5];
 c2 = [0.5 1 1.5];

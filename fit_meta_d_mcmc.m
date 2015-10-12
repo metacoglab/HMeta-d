@@ -122,11 +122,7 @@ function fit = fit_meta_d_mcmc(nR_S1, nR_S2, mcmc_params, fncdf, fninv)
 if ~mod(length(nR_S1),2)==0, error('input arrays must have an even number of elements'); end
 if length(nR_S1)~=length(nR_S2), error('input arrays must have the same number of elements'); end
 % Check and pad zeros if necessary (until fix found for dmulti issue)
-if any(nR_S1 < 1) | any(nR_S2 < 1), error('input arrays contain zeros; consider padding your data with 1s'); end
-
-if ~exist('s','var') || isempty(s)
-    s = 1;
-end
+% if any(nR_S1 < 1) | any(nR_S2 < 1), error('input arrays contain zeros; consider padding your data with 1s'); end
 
 if ~exist('fncdf','var') || isempty(fncdf)
     fncdf = @normcdf;

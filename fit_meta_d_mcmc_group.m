@@ -1,18 +1,23 @@
-function fit = fit_meta_d_mcmc_group(nR_S1, nR_S2, mcmc_params, s, fncdf, fninv)
-% fit = fit_meta_d_mcmc_group(nR_S1, nR_S2, mcmc_params, s, fncdf, fninv)
+function fit = fit_meta_d_mcmc_group(nR_S1, nR_S2, mcmc_params, fncdf, fninv)
+% fit = fit_meta_d_mcmc_group(nR_S1, nR_S2, mcmc_params, fncdf, fninv)
 %
 % Given data from an experiment where observers discriminate between two
 % stimulus alternatives on every trial and provides confidence ratings,
-% fits Maniscalco & Lau's meta-d' model to the data using MCMC implemented in
+% fits d' and meta-d' using MCMC implemented in
 % JAGS. Requires matjags and JAGS to be installed
 % (see http://psiexp.ss.uci.edu/research/programs_data/jags/)
 %
 % Use fit_meta_d_mcmc if you are estimating single-subject data. This
-% function will estimate group-level parameter distributions over meta-d' from the set of
+% function will estimate group-level parameter distributions over meta-d'/d' from the set of
 % all subjects' choices, having taken into account uncertainty in model
 % fits at the single-subject level.
 %
-% For more information on the model please see:
+% For more information on the type 1 d' model please see:
+%
+% Lee (2008) BayesSDT: Software for Bayesian inference with signal
+% detection theory. Behavior Research Methods 40 (2), 450-456
+%
+% For more information on the meta-d' model please see:
 %
 % Maniscalco B, Lau H (2012) A signal detection theoretic approach for
 % estimating metacognitive sensitivity from confidence ratings.
@@ -43,11 +48,6 @@ function fit = fit_meta_d_mcmc_group(nR_S1, nR_S2, mcmc_params, s, fncdf, fninv)
 % responded S2, rating=1 : 10 times
 % responded S2, rating=2 : 5 times
 % responded S2, rating=3 : 1 time
-%
-% * s
-% this is the ratio of standard deviations for type 1 distributions, i.e.
-%
-% s = sd(S1) / sd(S2)
 %
 % if not specified, s is set to a default value of 1.
 % the function SDT_MLE_fit available at
@@ -80,9 +80,6 @@ function fit = fit_meta_d_mcmc_group(nR_S1, nR_S2, mcmc_params, s, fncdf, fninv)
 %     mcmc_params.doparallel = 0; % Parallel Option
 %     mcmc_params.dic = 1;  % Save DIC
 %
-% To get meaningful Rhat estimates mcmc_params.init0 should be set at
-% different locations for each chain (see XX for more details)
-%
 % OUTPUT
 %
 % Output is packaged in the struct "fit". All parameter values are taken
@@ -97,14 +94,14 @@ function fit = fit_meta_d_mcmc_group(nR_S1, nR_S2, mcmc_params, s, fncdf, fninv)
 % fit.lambda_logMratio  = precision of posterior distribution of group
 % log-Mratio
 % fit.mu_Mratio         = exp(fit.mu_logMratio)
-% fit.da        = mean(S2) - mean(S1) for each subject, in room-mean-square(sd(S1),sd(S2)) units
-% fit.meta_da   = meta-d' in RMS units for each individual subject
-% fit.t1ca      = type 1 criterion for each individual subject meta-d' fit, RMS units
-% fit.t2ca      = type 2 criteria for each individual subject meta-d' fit, RMS units
+% fit.d1                = fitted type 1 d' for each subject
+% fit.c1                = fitted type 1 criterion for each subject
+% fit.meta_d            = meta-d' in RMS units for each individual subject
+% fit.t2ca_rS1          = type 2 criteria for response=S1 for each individual subject meta-d' fit
+% fit.t2ca_rS2          = type 2 criteria for response=S2 for each individual subject meta-d' fit
 %
 % fit.mcmc.dic          = deviance information criterion (DIC) for model
 % fit.mcmc.Rhat    = Gelman & Rubin's Rhat statistic for each parameter
-% fit.mcmc.
 %
 % fit.obs_HR2_rS1  = actual type 2 hit rates for S1 responses
 % fit.est_HR2_rS1  = estimated type 2 hit rates for S1 responses
@@ -132,10 +129,6 @@ function fit = fit_meta_d_mcmc_group(nR_S1, nR_S2, mcmc_params, s, fncdf, fninv)
 % nR_S1{2} = [1540  933  953  724  455  219   79   25];
 % nR_S2{2} = [35   76  220  469  713 1020  973 1560];
 
-if ~exist('s','var') || isempty(s)
-    s = 1;
-end
-
 if ~exist('fncdf','var') || isempty(fncdf)
     fncdf = @normcdf;
 end
@@ -146,30 +139,14 @@ end
 
 Nsubj = length(nR_S1);
 nRatings = length(nR_S1{1})/2;
-c1_index = nRatings;
-padFactor = 1/(2*nRatings);
 
-for n = 1:Nsubj
-    
+for n = 1:Nsubj    
     if length(nR_S1{n}) ~= nRatings*2 || length(nR_S2{n}) ~= nRatings*2
         error('Subjects do not have equal numbers of response categories');
     end
     % Get type 1 SDT parameter values
     counts(n,:) = [nR_S1{n} nR_S2{n}];
     nTot(n) = sum(counts(n,:));
-    pad_nR_S1 = nR_S1{n} + padFactor;
-    pad_nR_S2 = nR_S2{n} + padFactor;
-    
-    j=1;
-    for c = 2:nRatings*2
-        ratingHR(j) = sum(pad_nR_S2(c:(nRatings*2)))/sum(pad_nR_S2);
-        ratingFAR(j) = sum(pad_nR_S1(c:(nRatings*2)))/sum(pad_nR_S1);
-        j=j+1;
-    end
-    
-    % Get type 1 estimate (from pair of middle HR/FAR ratings)
-    d1(n) = norminv(ratingHR(c1_index))-norminv(ratingFAR(c1_index));
-    c1(n) = -0.5 * (norminv(ratingHR(c1_index)) + norminv(ratingFAR(c1_index)));
 end
 
 %% Sampling
@@ -187,18 +164,18 @@ if ~exist('mcmc_params','var') || isempty(mcmc_params)
     end
 end
 % Assign variables to the observed nodes
-datastruct = struct('nsubj',Nsubj,'counts', counts, 'd1', d1, 'c', c1, 'nratings', nRatings, 'nTot', nTot, 'Tol', 1e-05);
+datastruct = struct('nsubj',Nsubj,'counts', counts, 'nratings', nRatings, 'nTot', nTot, 'Tol', 1e-05);
 
 % Select model file and parameters to monitor
 
 switch mcmc_params.response_conditional
     case 0
         model_file = 'Bayes_metad_group.txt';
-        monitorparams = {'mu_logMratio','lambda_logMratio','Mratio','cS1','cS2'};
+        monitorparams = {'d1', 'c', 'mu_logMratio','lambda_logMratio','Mratio','cS1','cS2'};
         
     case 1
         model_file = 'Bayes_metad_rc_group.txt';
-        monitorparams = {'mu_logMratio_rS1','mu_logMratio_rS2','lambda_logMratio_rS1','lambda_logMratio_rS2','Mratio_rS1','Mratio_rS2','cS1','cS2'};
+        monitorparams = {'d1', 'c', 'mu_logMratio_rS1','mu_logMratio_rS2','lambda_logMratio_rS1','lambda_logMratio_rS2','Mratio_rS1','Mratio_rS2','cS1','cS2'};
 end
 
 % Use JAGS to Sample
@@ -222,6 +199,8 @@ fprintf( 'Running JAGS ...\n' );
 toc
 
 % Package group-level output
+fit.d1 = stats.mean.d1;
+fit.c1 = stats.mean.c;
 
 if ~mcmc_params.response_conditional
     
@@ -229,8 +208,7 @@ if ~mcmc_params.response_conditional
     fit.mu_logMratio = stats.mean.mu_logMratio;
     fit.lambda_logMratio = stats.mean.lambda_logMratio;
     fit.Mratio = stats.mean.Mratio;
-    fit.meta_d   = fit.Mratio.*d1;
-    fit.meta_da = sqrt(2/(1+s^2)) * s * fit.meta_d;
+    fit.meta_d   = fit.Mratio.*fit.d1;
 
 else
 
@@ -242,23 +220,18 @@ else
     fit.lambda_logMratio_rS2 = stats.mean.lambda_logMratio_rS2;
     fit.Mratio_rS1 = stats.mean.Mratio_rS1;
     fit.Mratio_rS2 = stats.mean.Mratio_rS2;
-    fit.meta_d_rS1   = fit.Mratio_rS1.*d1;
-    fit.meta_d_rS2   = fit.Mratio_rS2.*d1;
-    fit.meta_da_rS1 = sqrt(2/(1+s^2)) * s * fit.meta_d_rS1;
-    fit.meta_da_rS2 = sqrt(2/(1+s^2)) * s * fit.meta_d_rS2;
+    fit.meta_d_rS1   = fit.Mratio_rS1.*fit.d1;
+    fit.meta_d_rS2   = fit.Mratio_rS2.*fit.d1;
 
 end
-fit.da        = sqrt(2/(1+s^2)) .* s .* d1;
-fit.s         = s;
-fit.meta_ca   = ( sqrt(2).*s ./ sqrt(1+s.^2) ) .* c1;
 
 if isrow(stats.mean.cS1)
     stats.mean.cS1 = stats.mean.cS1';
     stats.mean.cS2 = stats.mean.cS2';
 end
     
-fit.t2ca_rS1  = ( sqrt(2).*s ./ sqrt(1+s.^2) ) .* stats.mean.cS1;
-fit.t2ca_rS2  = ( sqrt(2).*s ./ sqrt(1+s.^2) ) .* stats.mean.cS2;
+fit.t2ca_rS1  = stats.mean.cS1;
+fit.t2ca_rS2  = stats.mean.cS2;
 
 fit.mcmc.dic = stats.dic;
 fit.mcmc.Rhat = stats.Rhat;
@@ -285,6 +258,7 @@ for n = 1:Nsubj
     
     
     % Calculate fits based on either vanilla or response-conditional model
+    s = 1;
     switch mcmc_params.response_conditional
         
         case 0
@@ -294,11 +268,11 @@ for n = 1:Nsubj
             S1mu = -meta_d/2; S1sd = 1;
             S2mu =  meta_d/2; S2sd = S1sd/s;
             
-            C_area_rS2 = 1-fncdf(c1(n),S2mu,S2sd);
-            I_area_rS2 = 1-fncdf(c1(n),S1mu,S1sd);
+            C_area_rS2 = 1-fncdf(fit.c1(n),S2mu,S2sd);
+            I_area_rS2 = 1-fncdf(fit.c1(n),S1mu,S1sd);
             
-            C_area_rS1 = fncdf(c1(n),S1mu,S1sd);
-            I_area_rS1 = fncdf(c1(n),S2mu,S2sd);
+            C_area_rS1 = fncdf(fit.c1(n),S1mu,S1sd);
+            I_area_rS1 = fncdf(fit.c1(n),S2mu,S2sd);
             
             t2c1 = [fit.t2ca_rS1(n,:) fit.t2ca_rS2(n,:)];
             
@@ -327,14 +301,14 @@ for n = 1:Nsubj
             %% find estimated t2FAR and t2HR
             S1mu_rS1 = -fit.meta_d_rS1(n)/2; S1sd = 1;
             S2mu_rS1 =  fit.meta_d_rS1(n)/2; S2sd = S1sd/s;
-            S1mu_rS2 = -fit.meta_d_rS2(n)/2/2;
+            S1mu_rS2 = -fit.meta_d_rS2(n)/2;
             S2mu_rS2 =  fit.meta_d_rS2(n)/2;
             
-            C_area_rS2 = 1-fncdf(c1(n),S2mu_rS2,S2sd);
-            I_area_rS2 = 1-fncdf(c1(n),S1mu_rS2,S1sd);
+            C_area_rS2 = 1-fncdf(fit.c1(n),S2mu_rS2,S2sd);
+            I_area_rS2 = 1-fncdf(fit.c1(n),S1mu_rS2,S1sd);
             
-            C_area_rS1 = fncdf(c1(n),S1mu_rS1,S1sd);
-            I_area_rS1 = fncdf(c1(n),S2mu_rS1,S2sd);
+            C_area_rS1 = fncdf(fit.c1(n),S1mu_rS1,S1sd);
+            I_area_rS1 = fncdf(fit.c1(n),S2mu_rS1,S2sd);
             
             t2c1 = [fit.t2ca_rS1(n,:) fit.t2ca_rS2(n,:)];
             
