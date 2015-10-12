@@ -124,19 +124,18 @@ model {
 			cS1[s,1:nratings-1,2] <- sort(cS1_raw[s,,2])
 			cS2[s,1:nratings-1,2] <- sort(cS2_raw[s,,2])
 
-
-		Mratio[s,1] ~ dnorm(mu_Mratio, lambda_Mratio)	
+        log_Mratio[s] ~ dnorm(mu_logMratio, lambda_logMratio)
+        Mratio[s,1] <- exp(log_Mratio[s])
         diff[s] ~ dnorm(mu_diff, lambda_diff)
 		Mratio[s,2] <- Mratio[s,1] + diff[s]
 		
 	}
 	
   	# hyperpriors on Mratio
-	mu_Mratio ~ dunif(0,4)
-	lambda_Mratio ~ dgamma(0.001,0.001)
+	mu_logMratio ~ dnorm(0,0.001)
+	lambda_logMratio ~ dgamma(0.001,0.001)
     # hyperprior on difference
     mu_diff ~ dnorm(0,0.25)
     lambda_diff ~ dgamma(0.001,0.001)
-
 	  
 }

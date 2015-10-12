@@ -1,6 +1,4 @@
-% Example Bayesian meta-d fit
-%
-% SF 2014
+% Example Bayesian meta-d fit (single subject)
 
 Ntrials = 10000;
 c = 0;

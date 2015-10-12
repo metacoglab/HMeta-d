@@ -39,13 +39,7 @@ mcmc_params.doparallel = 0; % Parallel Option
 mcmc_params.dic = 1;
 % Initialize Unobserved Variables
 for i=1:mcmc_params.nchains
-    S.mu_Mratio_rS1 = 1;
-    S.lambda_Mratio_rS1 = 0.5;
-    S.mu_Mratio_rS2 = 1;
-    S.lambda_Mratio_rS2 = 0.5;
-    S.cS1_raw = linspace(-1,0.2,length(c1));
-    S.cS2_raw = linspace(0.2,1,length(c2));
-    mcmc_params.init0(i) = S;
+    mcmc_params.init0(i) = struct;
 end
 
 % Fit group data all at once

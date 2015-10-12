@@ -39,9 +39,9 @@ fit = fit_meta_d_mcmc_group_paired(nR_S1, nR_S2);
 % Make some trace plots
 figure;
 subplot(1,2,1);
-plot(fit.mcmc.samples.mu_Mratio');
+plot(fit.mcmc.samples.mu_logMratio');
 xlabel('Sample');
-ylabel('meta-d/d');
+ylabel('log(meta-d/d'')');
 box off
 
 subplot(1,2,2);
@@ -52,4 +52,4 @@ box off
 
 % Calculate the HDI on the difference, test whether it overlaps zero
 hdi = calc_HDI(fit.mcmc.samples.mu_diff(:));
-fprintf(['\n HDI on difference = ', num2str(hdi) '\n\n'])
+fprintf(['\n HDI on difference (condition 2 > condition 1) = ', num2str(hdi) '\n\n'])

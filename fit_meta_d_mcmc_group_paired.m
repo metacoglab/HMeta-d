@@ -1,6 +1,12 @@
 function fit = fit_meta_d_mcmc_group_paired(nR_S1, nR_S2, mcmc_params, s, fncdf, fninv)
 % fit = fit_meta_d_mcmc_paired(nR_S1, nR_S2, mcmc_params, s, fncdf, fninv)
-
+%
+% Estimate difference between two conditions in within-subject design
+%
+% nR_S1 and nR_S2 must be cell arrays of 2xNratings, where each row
+% corresponds to a different condition and each cell to a different subject
+%
+% See fit_meta_d_mcmc_group for further details about input and output
 
 if ~exist('s','var') || isempty(s)
     s = 1;
@@ -60,20 +66,7 @@ if ~exist('mcmc_params','var') || isempty(mcmc_params)
     mcmc_params.dic = 1;
     % Initialize Unobserved Variables
     for i=1:mcmc_params.nchains
-        if mcmc_params.response_conditional
-            S.mu_Mratio_rS1 = 1;
-            S.lambda_Mratio_rS1 = 0.5;
-            S.mu_Mratio_rS2 = 1;
-            S.lambda_Mratio_rS2 = 0.5;
-        else % Not response conditional
-            S.mu_Mratio = 1;
-            S.lambda_Mratio = .5;
-            S.mu_diff = 0;
-            S.lambda_diff = .5;
-        end
-        S.cS1_raw = linspace(-1,0.2,nRatings);
-        S.cS2_raw = linspace(0.2,1,nRatings);
-        mcmc_params.init0(i) = S;
+        mcmc_params.init0(i) = struct;
     end
 end
 % Assign variables to the observed nodes
@@ -83,7 +76,7 @@ datastruct = struct('nsubj',Nsubj,'counts', counts, 'd1', d1, 'c', c1, 'nratings
 % Select model file and parameters to monitor
 
 model_file = 'Bayes_metad_group_paired.txt';
-monitorparams = {'mu_Mratio','lambda_Mratio','mu_diff','lambda_diff','Mratio','diff','cS1','cS2'};
+monitorparams = {'mu_logMratio','lambda_logMratio','mu_diff','lambda_diff','Mratio','diff','cS1','cS2'};
 
 % Use JAGS to Sample
 tic
@@ -106,10 +99,10 @@ fprintf( 'Running JAGS ...\n' );
 toc
 
 % Package group-level output
-
-fit.mu_Mratio = stats.mean.mu_Mratio;
+fit.mu_Mratio = exp(stats.mean.mu_logMratio);
+fit.mu_logMratio = stats.mean.mu_logMratio;
 fit.diff = stats.mean.mu_diff;
-fit.lambda_Mratio = stats.mean.lambda_Mratio;
+fit.lambda_logMratio = stats.mean.lambda_logMratio;
 fit.lambda_diff = stats.mean.lambda_diff;
 fit.Mratio = stats.mean.Mratio;
 fit.diff = stats.mean.diff;

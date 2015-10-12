@@ -43,7 +43,7 @@ axis square
 box off
 
 subplot(1,2,2);
-plot(fit.mcmc.samples.mu_Mratio');
+plot(fit.mcmc.samples.mu_logMratio');
 xlabel('Sample');
-ylabel('meta-d/d');
+ylabel('log(meta-d/d'')');
 box off

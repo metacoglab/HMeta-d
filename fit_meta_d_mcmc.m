@@ -169,17 +169,8 @@ if ~exist('mcmc_params','var') || isempty(mcmc_params)
     mcmc_params.nthin = 1; % How Often is a Sample Recorded?
     mcmc_params.doparallel = 0; % Parallel Option
     mcmc_params.dic = 1;
-    % Initialize Unobserved Variables
     for i=1:mcmc_params.nchains
-        if mcmc_params.response_conditional
-            S.meta_d_rS1 = d1;
-            S.meta_d_rS2 = d1;
-        else
-            S.meta_d = d1;
-        end
-        S.cS1_raw = linspace(-1,0.2,nRatings);
-        S.cS2_raw = linspace(0.2,1,nRatings);
-        mcmc_params.init0(i) = S;
+        mcmc_params.init0(i) = struct;
     end
 end
 % Assign variables to the observed nodes
@@ -252,8 +243,6 @@ switch mcmc_params.response_conditional
     case 0
         
         fit.meta_da   = sqrt(2/(1+s^2)) * s * stats.mean.meta_d;
-%         fit.M_diff    = stats.mean.Mdiff;
-%         fit.M_ratio   = stats.mean.Mratio;
         fit.M_diff = stats.mean.meta_d - fit.da;
         fit.M_ratio = stats.mean.meta_d/fit.da;
         
