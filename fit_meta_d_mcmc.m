@@ -132,15 +132,33 @@ if ~exist('fninv','var') || isempty(fninv)
     fninv = @norminv;
 end
 
-% Transform data
+% Transform data and type 1 d' calculations
 counts = [nR_S1 nR_S2];
 nTot = sum(counts);
 nRatings = length(nR_S1)/2;
+
+% Adjust to ensure non-zero counts for type 1 d' point estimate (not
+% necessary if estimating d' inside JAGS)
+adj_f = 1/length(nR_S1);
+nR_S1_adj = nR_S1 + adj_f;
+nR_S2_adj = nR_S2 + adj_f;
+ratingHR  = [];
+ratingFAR = [];
+for c = 2:nRatings*2
+    ratingHR(end+1) = sum(nR_S2_adj(c:end)) / sum(nR_S2_adj);
+    ratingFAR(end+1) = sum(nR_S1_adj(c:end)) / sum(nR_S1_adj);
+end
+
+t1_index = nRatings;
+
+d1 = fninv(ratingHR(t1_index)) - fninv(ratingFAR(t1_index));
+c1 = fninv(ratingHR(t1_index)) + fninv(ratingFAR(t1_index));
 
 %% Sampling
 if ~exist('mcmc_params','var') || isempty(mcmc_params)
     % MCMC Parameters
     mcmc_params.response_conditional = 0;
+    mcmc_params.estimate_dprime = 0;    % also estimate dprime in same model?
     mcmc_params.nchains = 3; % How Many Chains?
     mcmc_params.nburnin = 1000; % How Many Burn-in Samples?
     mcmc_params.nsamples = 10000;  %How Many Recorded Samples?
@@ -152,7 +170,12 @@ if ~exist('mcmc_params','var') || isempty(mcmc_params)
     end
 end
 % Assign variables to the observed nodes
-datastruct = struct('counts', counts, 'nratings', nRatings, 'nTot', nTot, 'Tol', 1e-05);
+switch mcmc_params.estimate_dprime
+    case 1
+        datastruct = struct('counts', counts, 'nratings', nRatings, 'nTot', nTot, 'Tol', 1e-05);
+    case 0
+        datastruct = struct('d1', d1, 'c1', c1, 'counts', counts, 'nratings', nRatings, 'nTot', nTot, 'Tol', 1e-05);
+end
 
 % Select model file and parameters to monitor
 

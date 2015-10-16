@@ -33,12 +33,30 @@ for n = 1:Nsubj
     counts(n,:) = [nR_S1{n} nR_S2{n}];
     nTot(n) = sum(counts(n,:));
 
+    % Adjust to ensure non-zero counts for type 1 d' point estimate (not
+    % necessary if estimating d' inside JAGS)
+    adj_f = 1/length(nR_S1{n});
+    nR_S1_adj = nR_S1{n} + adj_f;
+    nR_S2_adj = nR_S2{n} + adj_f;
+        
+    ratingHR  = [];
+    ratingFAR = [];
+    for c = 2:nRatings*2
+        ratingHR(end+1) = sum(nR_S2_adj(c:end)) / sum(nR_S2_adj);
+        ratingFAR(end+1) = sum(nR_S1_adj(c:end)) / sum(nR_S1_adj);
+    end
+
+    t1_index = nRatings;
+
+    d1(n) = fninv(ratingHR(t1_index)) - fninv(ratingFAR(t1_index));
+    c1(n) = fninv(ratingHR(t1_index)) + fninv(ratingFAR(t1_index));
 end
 
 %% Sampling
 if ~exist('mcmc_params','var') || isempty(mcmc_params)
     % MCMC Parameters
     mcmc_params.response_conditional = 0;
+    mcmc_params.estimate_dprime = 0;    % also estimate dprime in same model?
     mcmc_params.nchains = 3; % How Many Chains?
     mcmc_params.nburnin = 1000; % How Many Burn-in Samples?
     mcmc_params.nsamples = 10000;  %How Many Recorded Samples?
@@ -51,10 +69,16 @@ if ~exist('mcmc_params','var') || isempty(mcmc_params)
     end
 end
 % Assign variables to the observed nodes
-datastruct = struct('nsubj',Nsubj,'counts', counts, 'nratings', nRatings, 'nTot', nTot, 'Tol', 1e-05, 'grpind', grpind);
+% Assign variables to the observed nodes
+switch mcmc_params.estimate_dprime
+    case 1
+        datastruct = struct('nsubj',Nsubj,'counts', counts, 'nratings', nRatings, 'nTot', nTot, 'Tol', 1e-05, 'grpind', grpind);
+    case 0
+        datastruct = struct('d1', d1, 'c1', c1, 'nsubj',Nsubj,'counts', counts, 'nratings', nRatings, 'nTot', nTot, 'Tol', 1e-05, 'grpind', grpind);
+end
 
 model_file = 'Bayes_metad_group_twoGroups.txt';
-monitorparams = {'d1', 'c', 'mu_logMratio','lambda_logMratio','mu_MratioG','lambda_MratioG','diff','MratioBaseline','Mratio','cS1','cS2'};
+monitorparams = {'d1', 'c', 'mu_Mratio','lambda_Mratio','mu_MratioG','lambda_MratioG','diff','MratioBaseline','Mratio','cS1','cS2'};
 
 
 % Use JAGS to Sample
@@ -81,9 +105,8 @@ toc
 
 fit.d1 = stats.mean.d1;
 fit.c1 = stats.mean.c;
-fit.mu_logMratio = stats.mean.mu_logMratio;
-fit.mu_Mratio = exp(stats.mean.mu_logMratio);
-fit.lambda_logMratio = stats.mean.lambda_logMratio;
+fit.mu_Mratio = stats.mean.mu_Mratio;
+fit.lambda_Mratio = stats.mean.lambda_Mratio;
 fit.mu_MratioG = stats.mean.mu_MratioG;
 fit.lambda_MratioG = stats.mean.lambda_MratioG;
 fit.diff = stats.mean.diff;
