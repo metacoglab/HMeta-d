@@ -13,7 +13,7 @@ c2 = [0.5 1 1.5];
 
 group_d = 2;
 sigma = 0.5;
-noise = 0.2;
+noise = 0;
 
 for i = 1:Nsub
         
@@ -43,7 +43,7 @@ axis square
 box off
 
 subplot(1,2,2);
-plot(fit.mcmc.samples.mu_logMratio');
+plot(fit.mcmc.samples.mu_Mratio');
 xlabel('Sample');
-ylabel('log(meta-d/d'')');
+ylabel('meta-d/d''');
 box off

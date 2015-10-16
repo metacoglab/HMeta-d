@@ -5,7 +5,7 @@
 clear all
 close all
 
-Ntrials = 200;
+Ntrials = 100;
 Nsub = 15;
 c = 0;
 c1 = [-1.5 -1 -0.5];
@@ -13,7 +13,7 @@ c2 = [0.5 1 1.5];
 
 group_d = 2;    % same dprime across tasks
 sigma = 0.5;
-noise(1) = 0.2;
+noise(1) = 0;
 noise(2) = 0.5; % task 2 has worse metacognition than task 1 
 % (in this simulation the noise terms are independent but the model assumes correlated noise, i.e. within-subject design)
 
@@ -39,9 +39,9 @@ fit = fit_meta_d_mcmc_group_paired(nR_S1, nR_S2);
 % Make some trace plots
 figure;
 subplot(1,2,1);
-plot(fit.mcmc.samples.mu_logMratio');
+plot(fit.mcmc.samples.mu_Mratio');
 xlabel('Sample');
-ylabel('log(meta-d/d'')');
+ylabel('meta-d/d''');
 box off
 
 subplot(1,2,2);

@@ -42,7 +42,7 @@ fit = fit_meta_d_mcmc_group_twoGroups(nR_S1, nR_S2, groupIndex);
 % Make some trace plots
 figure;
 subplot(1,2,1);
-plot(fit.mcmc.samples.mu_logMratio');
+plot(fit.mcmc.samples.mu_Mratio');
 xlabel('Sample');
 ylabel('log(meta-d/d'')');
 box off
