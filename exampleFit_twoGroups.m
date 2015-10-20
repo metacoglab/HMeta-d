@@ -5,15 +5,15 @@
 clear all
 close all
 
-Ntrials = 250;
-Nsub = 20;
+Ntrials = 100;
+Nsub = 15;
 c = 0;
 c1 = [-1.5 -1 -0.5];
 c2 = [0.5 1 1.5];
 
 group_d = 2;    % same dprime across groups
 sigma = 0.5;
-noise(1) = 0.2;
+noise(1) = 0;
 noise(2) = 0.5; % group 2 has worse metacognition than group 1
 
 groupIndex = [];

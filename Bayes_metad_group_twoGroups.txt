@@ -79,8 +79,8 @@ model {
 	cS1[s,1:nratings-1] <- sort(cS1_raw[s, ])
 	cS2[s,1:nratings-1] <- sort(cS2_raw[s, ])
 
-	diff[s] ~ dnorm(mu_MratioG,lambda_MratioG)
-	MratioBaseline[s] <- dnorm(mu_Mratio, lambda_Mratio)
+	diff[s] ~ dnorm(mu_MratioG, lambda_MratioG)
+	MratioBaseline[s] ~ dnorm(mu_Mratio, lambda_Mratio)
 	Mratio[s] <- grpind[s]*diff[s] + MratioBaseline[s]
 
 	}
