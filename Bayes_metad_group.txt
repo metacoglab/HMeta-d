@@ -6,7 +6,9 @@ data {
         N[s] <- sum(counts[s,1:nratings*2])
         S[s] <- sum(counts[s,(nratings*2)+1:nratings*4])
         H[s] <- sum(counts[s,(nratings*3)+1:nratings*4])
-        FA[s] <- sum(counts[s,nratings+1:nratings*2])
+        FA[s] <- sum(counts[s,(nratings*2)+1:nratings*3])
+        M[s] <- sum(counts[s,nratings+1:nratings*2])
+        CR[s] <- sum(counts[s,1:nratings])
     }
 }
 
@@ -25,7 +27,10 @@ model {
 
     ## TYPE 2 SDT MODEL (META-D)
 	# Multinomial likelihood for response counts ordered as c(nR_S1,nR_S2)
-	counts[s, ] ~ dmulti(prT[s, ],nTot[s])
+    counts[s,1:nratings] ~ dmulti(prT[s,1:nratings],CR[s])
+    counts[s,nratings+1:nratings*2] ~ dmulti(prT[s,nratings+1:nratings*2],M[s])
+    counts[s,(nratings*2)+1:nratings*3] ~ dmulti(prT[s,(nratings*2)+1:nratings*3],FA[s])
+    counts[s,(nratings*3)+1:nratings*4] ~ dmulti(prT[s,(nratings*3)+1:nratings*4],H[s])
 
 	# Means of SDT distributions]
 	mu[s] <- Mratio[s]*d1[s]
@@ -79,11 +84,15 @@ model {
 	cS1[s,1:nratings-1] <- sort(cS1_raw[s, ])
 	cS2[s,1:nratings-1] <- sort(cS2_raw[s, ])
     
-    Mratio[s] ~ dnorm(mu_Mratio, lambda_Mratio)
+    delta[s] ~ dnorm(0, lambda_delta)
+    Mratio[s] <- mu_Mratio + epsilon_Mratio*delta[s]
 	}
 	
-  	# hyperpriors on log(Mratio)
-    mu_Mratio ~ dunif(0, 4)
-	lambda_Mratio ~ dgamma(0.001,0.001)
+  	# hyperpriors
+    mu_Mratio ~ dunif(0,4)
+    sigma_delta ~ dunif(0,10)
+    lambda_delta <- pow(sigma_delta, -2)
+    epsilon_Mratio ~ dbeta(1,1)
+    sigma_Mratio <- abs(epsilon_Mratio)*sigma_delta
   
 }

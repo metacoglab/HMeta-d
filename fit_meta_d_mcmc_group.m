@@ -168,9 +168,9 @@ end
 if ~exist('mcmc_params','var') || isempty(mcmc_params)
     % MCMC Parameters
     mcmc_params.response_conditional = 0;   % response-conditional meta-d?
-    mcmc_params.estimate_dprime = 0;    % also estimate dprime in same model?
+    mcmc_params.estimate_dprime = 1;    % also estimate dprime in same model?
     mcmc_params.nchains = 3; % How Many Chains?
-    mcmc_params.nburnin = 1000; % How Many Burn-in Samples?
+    mcmc_params.nburnin = 3000; % How Many Burn-in Samples?
     mcmc_params.nsamples = 10000;  %How Many Recorded Samples?
     mcmc_params.nthin = 1; % How Often is a Sample Recorded?
     mcmc_params.doparallel = 0; % Parallel Option
@@ -191,7 +191,7 @@ end
 switch mcmc_params.response_conditional
     case 0
         model_file = 'Bayes_metad_group.txt';
-        monitorparams = {'d1', 'c', 'mu_Mratio','lambda_Mratio','Mratio','cS1','cS2'};
+        monitorparams = {'d1', 'c', 'mu_Mratio','sigma_Mratio','Mratio','cS1','cS2'};
         
     case 1
         model_file = 'Bayes_metad_rc_group.txt';
@@ -225,7 +225,7 @@ fit.c1 = stats.mean.c;
 if ~mcmc_params.response_conditional
     
     fit.mu_Mratio = stats.mean.mu_Mratio;
-    fit.lambda_Mratio = stats.mean.lambda_Mratio;
+    fit.sigma_Mratio = stats.mean.sigma_Mratio;
     fit.Mratio = stats.mean.Mratio;
     fit.meta_d   = fit.Mratio.*fit.d1;
 
