@@ -6,7 +6,9 @@ data {
         N[s] <- sum(counts[s,1:nratings*2])
         S[s] <- sum(counts[s,(nratings*2)+1:nratings*4])
         H[s] <- sum(counts[s,(nratings*3)+1:nratings*4])
-        FA[s] <- sum(counts[s,nratings+1:nratings*2])
+        FA[s] <- sum(counts[s,(nratings*2)+1:nratings*3])
+        M[s] <- sum(counts[s,nratings+1:nratings*2])
+        CR[s] <- sum(counts[s,1:nratings])
     }
 }
 
@@ -25,7 +27,10 @@ model {
 
     ## TYPE 2 SDT MODEL (META-D)
 	# Multinomial likelihood for response counts ordered as c(nR_S1,nR_S2)
-	counts[s, ] ~ dmulti(prT[s, ],nTot[s])
+    counts[s,1:nratings] ~ dmulti(prT[s,1:nratings],CR[s])
+    counts[s,nratings+1:nratings*2] ~ dmulti(prT[s,nratings+1:nratings*2],M[s])
+    counts[s,(nratings*2)+1:nratings*3] ~ dmulti(prT[s,(nratings*2)+1:nratings*3],FA[s])
+    counts[s,(nratings*3)+1:nratings*4] ~ dmulti(prT[s,(nratings*3)+1:nratings*4],H[s])
 
 	# Means of SDT distributions]
 	mu[s] <- Mratio[s]*d1[s]
@@ -80,15 +85,31 @@ model {
 	cS2[s,1:nratings-1] <- sort(cS2_raw[s, ])
 
 	diff[s] ~ dnorm(mu_MratioG,lambda_MratioG)
-	MratioBaseline[s] <- dnorm(mu_Mratio, lambda_Mratio)
+	MratioBaseline[s] ~ dnorm(mu_Mratio, lambda_Mratio)
 	Mratio[s] <- grpind[s]*diff[s] + MratioBaseline[s]
+    
+    # MratioBaseline[s] <- mu_Mratio + epsilon_Mratio*delta[s]
+    # diff[s] <- mu_MratioG + epsilon_MratioG*deltaG[s]
+    # Mratio[s] <- grpind[s]*diff[s] + MratioBaseline[s]
+    # delta[s] ~ dnorm(0, lambda_delta)
+    # deltaG[s] ~ dnorm(0, lambda_deltaG)
 
 	}
 	
   	# hyperpriors on Mratio & group diffs (recall JAGS wants precision = 1/(SD^2) for dnorm)
 	mu_Mratio ~ dunif(0,4)
-	lambda_Mratio ~ dgamma(0.001,0.001)
+    sigma_Mratio ~ dunif(0,10)
+	lambda_Mratio <- pow(sigma_Mratio,-2)
 	mu_MratioG ~ dnorm(0,0.001)
-	lambda_MratioG ~ dgamma(0.001,0.001)
-  
+    sigma_MratioG ~ dunif(0,10)
+	lambda_MratioG <- pow(sigma_MratioG,-2)
+
+    # sigma_delta ~ dunif(0,10)
+    # sigma_deltaG ~ dunif(0,10)
+    # lambda_delta <- pow(sigma_delta, -2)
+    # lambda_deltaG <- pow(sigma_deltaG, -2)
+    # epsilon_Mratio ~ dbeta(1,1)
+    # sigma_Mratio <- abs(epsilon_Mratio)*sigma_delta
+    # epsilon_MratioG ~ dbeta(1,1)
+    # sigma_MratioG <- abs(epsilon_MratioG)*sigma_deltaG
 }

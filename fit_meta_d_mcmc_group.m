@@ -119,7 +119,7 @@ function fit = fit_meta_d_mcmc_group(nR_S1, nR_S2, mcmc_params, fncdf, fninv)
 % Parts of this code are adapted from Brian Maniscalco's meta-d' toolbox
 % which can be found at http://www.columbia.edu/~bsm2105/type2sdt/
 %
-% Updated 12/10/2015 to construct uninformative priors on log(Mratio)
+% Updated 12/10/15 to include estimation of type 1 d' within same model
 
 % toy data
 % nR_S1{1} = [1552  933  954  720  448  220   78   27];
@@ -195,7 +195,7 @@ switch mcmc_params.response_conditional
         
     case 1
         model_file = 'Bayes_metad_rc_group.txt';
-        monitorparams = {'d1', 'c', 'mu_Mratio_rS1','mu_Mratio_rS2','lambda_Mratio_rS1','lambda_Mratio_rS2','Mratio_rS1','Mratio_rS2','cS1','cS2'};
+        monitorparams = {'d1', 'c', 'mu_Mratio_rS1','mu_Mratio_rS2','sigma_Mratio_rS1','sigma_Mratio_rS2','Mratio_rS1','Mratio_rS2','cS1','cS2'};
 end
 
 % Use JAGS to Sample
@@ -233,8 +233,8 @@ else
 
     fit.mu_Mratio_rS1 = stats.mean.mu_Mratio_rS1;
     fit.mu_Mratio_rS2 = stats.mean.mu_Mratio_rS2;
-    fit.lambda_Mratio_rS1 = stats.mean.lambda_Mratio_rS1;
-    fit.lambda_Mratio_rS2 = stats.mean.lambda_Mratio_rS2;
+    fit.sigma_Mratio_rS1 = stats.mean.sigma_Mratio_rS1;
+    fit.sigma_Mratio_rS2 = stats.mean.sigma_Mratio_rS2;
     fit.Mratio_rS1 = stats.mean.Mratio_rS1;
     fit.Mratio_rS2 = stats.mean.Mratio_rS2;
     fit.meta_d_rS1   = fit.Mratio_rS1.*fit.d1;
