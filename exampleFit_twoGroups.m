@@ -7,12 +7,14 @@ close all
 
 Ntrials = 500;
 Nsub = 30;
+
 c = 0;
 c1 = [-1.5 -1 -0.5];
 c2 = [0.5 1 1.5];
 
 group_d = 2;    % same dprime across groups
 sigma = 0.5;
+
 group_mratio(1) = 1;
 group_mratio(2) = 0.6; % group 2 has worse metacognition than group 1
 
