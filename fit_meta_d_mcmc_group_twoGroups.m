@@ -56,9 +56,9 @@ end
 if ~exist('mcmc_params','var') || isempty(mcmc_params)
     % MCMC Parameters
     mcmc_params.response_conditional = 0;
-    mcmc_params.estimate_dprime = 0;    % also estimate dprime in same model?
+    mcmc_params.estimate_dprime = 1;    % also estimate dprime in same model?
     mcmc_params.nchains = 3; % How Many Chains?
-    mcmc_params.nburnin = 1000; % How Many Burn-in Samples?
+    mcmc_params.nburnin = 3000; % How Many Burn-in Samples?
     mcmc_params.nsamples = 10000;  %How Many Recorded Samples?
     mcmc_params.nthin = 1; % How Often is a Sample Recorded?
     mcmc_params.doparallel = 0; % Parallel Option
@@ -78,7 +78,7 @@ switch mcmc_params.estimate_dprime
 end
 
 model_file = 'Bayes_metad_group_twoGroups.txt';
-monitorparams = {'d1', 'c', 'mu_Mratio','lambda_Mratio','mu_MratioG','lambda_MratioG','diff','MratioBaseline','Mratio','cS1','cS2'};
+monitorparams = {'d1', 'c', 'mu_Mratio','sigma_Mratio','mu_MratioG','sigma_MratioG','diff','MratioBaseline','Mratio','cS1','cS2'};
 
 
 % Use JAGS to Sample
@@ -106,9 +106,9 @@ toc
 fit.d1 = stats.mean.d1;
 fit.c1 = stats.mean.c;
 fit.mu_Mratio = stats.mean.mu_Mratio;
-fit.lambda_Mratio = stats.mean.lambda_Mratio;
+fit.sigma_Mratio = stats.mean.sigma_Mratio;
 fit.mu_MratioG = stats.mean.mu_MratioG;
-fit.lambda_MratioG = stats.mean.lambda_MratioG;
+fit.sigma_MratioG = stats.mean.sigma_MratioG;
 fit.diff = stats.mean.diff;
 fit.MratioBaseline = stats.mean.MratioBaseline;
 fit.Mratio = stats.mean.Mratio;

@@ -6,7 +6,9 @@ data {
         N[s] <- sum(counts[s,1:nratings*2])
         S[s] <- sum(counts[s,(nratings*2)+1:nratings*4])
         H[s] <- sum(counts[s,(nratings*3)+1:nratings*4])
-        FA[s] <- sum(counts[s,nratings+1:nratings*2])
+        FA[s] <- sum(counts[s,(nratings*2)+1:nratings*3])
+        M[s] <- sum(counts[s,nratings+1:nratings*2])
+        CR[s] <- sum(counts[s,1:nratings])
     }
 }
 
@@ -20,12 +22,15 @@ model {
     f[s] <- phi(-d1[s]/2-c[s])
 
     # Type 1 priors
-    c[s] ~ dnorm(0, 2)
-    d1[s] ~ dnorm(0, 0.5)
+    c[s] ~ dnorm(mu_c, lambda_c)
+    d1[s] ~ dnorm(mu_d1, lambda_d1)
 
     ## TYPE 2 SDT MODEL (META-D)
 	# Multinomial likelihood for response counts ordered as c(nR_S1,nR_S2)
-	counts[s, ] ~ dmulti(prT[s, ],nTot[s])
+    counts[s,1:nratings] ~ dmulti(prT[s,1:nratings],CR[s])
+    counts[s,nratings+1:nratings*2] ~ dmulti(prT[s,nratings+1:nratings*2],M[s])
+    counts[s,(nratings*2)+1:nratings*3] ~ dmulti(prT[s,(nratings*2)+1:nratings*3],FA[s])
+    counts[s,(nratings*3)+1:nratings*4] ~ dmulti(prT[s,(nratings*3)+1:nratings*4],H[s])
 
 	# Means of SDT distributions]
 	mu_rS1[s] <- Mratio_rS1[s]*d1[s]
@@ -76,21 +81,44 @@ model {
 
 	# Specify ordered prior on criteria (bounded above and below by Type 1 c) 
 	for (j in 1:nratings-1) {
-  		cS1_raw[s,j] ~ dnorm(0,2) I(,c[s]-Tol)
-  		cS2_raw[s,j] ~ dnorm(0,2) I(c[s]+Tol,)
+        cS1_raw[s,j] ~ dnorm(mu_cS1, lambda_cS1)
+        cS2_raw[s,j] ~ dnorm(mu_cS2, lambda_cS2)
 	}
 	cS1[s,1:nratings-1] <- sort(cS1_raw[s, ])
 	cS2[s,1:nratings-1] <- sort(cS2_raw[s, ])
 
-	Mratio_rS1[s] ~ dnorm(mu_Mratio_rS1, lambda_Mratio_rS1)	
-	Mratio_rS2[s] ~ dnorm(mu_Mratio_rS2, lambda_Mratio_rS2)	
+    delta_rS1[s] ~ dnorm(0, lambda_delta_rS1)
+    Mratio_rS1[s] <- mu_Mratio_rS1 + epsilon_Mratio_rS1*delta_rS1[s]
+    delta_rS2[s] ~ dnorm(0, lambda_delta_rS2)
+    Mratio_rS2[s] <- mu_Mratio_rS2 + epsilon_Mratio_rS2*delta_rS2[s]
 	
 	}
 	
-  	# hyperpriors on Mratio
-	mu_Mratio_rS1 ~ dunif(0,4)
-	lambda_Mratio_rS1 ~ dgamma(0.001,0.001)
-	mu_Mratio_rS2 ~ dunif(0,4)
-	lambda_Mratio_rS2 ~ dgamma(0.001,0.001)
+  	# hyperpriors
+    mu_d1 ~ dnorm(0, 0.25)
+    mu_c ~ dnorm(0, 0.25)
+    sigma_d1 ~ dnorm(0, 0.25) I(0, )
+    sigma_c ~ dnorm(0, 0.25) I(0, )
+    lambda_d1 <- pow(sigma_d1, -2)
+    lambda_c <- pow(sigma_c, -2)
+
+    mu_cS1 ~ dnorm(0, 0.25)
+    mu_cS2 ~ dnorm(0, 0.25)
+    sigma_cS1 ~ dnorm(0, 0.25) I(0, )
+    sigma_cS2 ~ dnorm(0, 0.25) I(0, )
+    lambda_cS1 <- pow(sigma_cS1, -2)
+    lambda_cS2 <- pow(sigma_cS2, -2)
+
+    mu_Mratio_rS1 ~ dunif(0,4)
+    sigma_delta_rS1 ~ dnorm(0,0.25) I(0,)
+    lambda_delta_rS1 <- pow(sigma_delta_rS1, -2)
+    epsilon_Mratio_rS1 ~ dbeta(1,1)
+    sigma_Mratio_rS1 <- abs(epsilon_Mratio_rS1)*sigma_delta_rS1
+
+    mu_Mratio_rS2 ~ dunif(0,4)
+    sigma_delta_rS2 ~ dnorm(0,0.25) I(0,)
+    lambda_delta_rS2 <- pow(sigma_delta_rS2, -2)
+    epsilon_Mratio_rS2 ~ dbeta(1,1)
+    sigma_Mratio_rS2 <- abs(epsilon_Mratio_rS2)*sigma_delta_rS2
 
 }

@@ -121,8 +121,6 @@ function fit = fit_meta_d_mcmc(nR_S1, nR_S2, mcmc_params, fncdf, fninv)
 
 if ~mod(length(nR_S1),2)==0, error('input arrays must have an even number of elements'); end
 if length(nR_S1)~=length(nR_S2), error('input arrays must have the same number of elements'); end
-% Check and pad zeros if necessary (until fix found for dmulti issue)
-% if any(nR_S1 < 1) | any(nR_S2 < 1), error('input arrays contain zeros; consider padding your data with 1s'); end
 
 if ~exist('fncdf','var') || isempty(fncdf)
     fncdf = @normcdf;
@@ -158,9 +156,9 @@ c1 = fninv(ratingHR(t1_index)) + fninv(ratingFAR(t1_index));
 if ~exist('mcmc_params','var') || isempty(mcmc_params)
     % MCMC Parameters
     mcmc_params.response_conditional = 0;
-    mcmc_params.estimate_dprime = 0;    % also estimate dprime in same model?
+    mcmc_params.estimate_dprime = 1;    % also estimate dprime in same model?
     mcmc_params.nchains = 3; % How Many Chains?
-    mcmc_params.nburnin = 1000; % How Many Burn-in Samples?
+    mcmc_params.nburnin = 3000; % How Many Burn-in Samples?
     mcmc_params.nsamples = 10000;  %How Many Recorded Samples?
     mcmc_params.nthin = 1; % How Often is a Sample Recorded?
     mcmc_params.doparallel = 0; % Parallel Option
@@ -183,7 +181,6 @@ switch mcmc_params.response_conditional
     case 0
         model_file = 'Bayes_metad.txt';
         monitorparams = {'meta_d','d1','c','cS1','cS2'};
-%         monitorparams = {'meta_d','cS1','cS2'};
         
     case 1
         model_file = 'Bayes_metad_rc.txt';

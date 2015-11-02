@@ -35,7 +35,7 @@ end
 % Fit the data using response-conditional model
 % MCMC Parameters
 mcmc_params.response_conditional = 1;
-mcmc_params.estimate_dprime = 0;
+mcmc_params.estimate_dprime = 1;
 mcmc_params.nchains = 3; % How Many Chains?
 mcmc_params.nburnin = 1000; % How Many Burn-in Samples?
 mcmc_params.nsamples = 10000;  %How Many Recorded Samples?
