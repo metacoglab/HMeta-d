@@ -13,7 +13,6 @@ c2 = [0.5 1 1.5];
 group_d = 2;
 group_mratio = 0.8;
 sigma = 0.5;
-noise = 0;
 
 for i = 1:Nsub
         

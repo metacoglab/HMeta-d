@@ -119,6 +119,15 @@ function fit = fit_meta_d_mcmc(nR_S1, nR_S2, mcmc_params, fncdf, fninv)
 % nR_S1 = [1552  933  954  720  448  220   78   27];
 % nR_S2 = [33   77  213  469  729 1013  975 1559];
 
+cwd = pwd;
+findpath = which('Bayes_metad_group.txt');
+if isempty(findpath)
+    error('Please add HMetaD directory to the path')
+else
+    hmmPath = fileparts(findpath);
+    cd(hmmPath)
+end
+
 if ~mod(length(nR_S1),2)==0, error('input arrays must have an even number of elements'); end
 if length(nR_S1)~=length(nR_S2), error('input arrays must have the same number of elements'); end
 
@@ -337,4 +346,5 @@ fit.obs_HR2_rS2  = obs_HR2_rS2;
 fit.est_FAR2_rS2 = est_FAR2_rS2;
 fit.obs_FAR2_rS2 = obs_FAR2_rS2;
 
+cd(cwd);
 
