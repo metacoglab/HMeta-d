@@ -16,6 +16,4 @@ http://mcmc-jags.sourceforge.net/
 
 2) The main functions are fit_meta_d_mcmc (for fitting individual subject data) and fit_meta_d_mcmc_group (for hierarchical fits of group data). More information is contained in the help of these two functions. To get started try running exampleFit or exampleFit_group.
 
-NB At present, when you run the model code you need to be in the same directory as the .txt files that contain the model code for JAGS (it’s not enough to add this directory to the path). This is annoying as usually you’d like to be in the same directory that contains your project data. A fix for this is in the pipeline.
-
 Please get in touch with your experiences with using the toolbox, and any bug reports or issues to me at stephen.fleming@ucl.ac.uk 
