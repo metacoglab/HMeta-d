@@ -3,12 +3,11 @@ function fit = fit_meta_d_mcmc_group(nR_S1, nR_S2, mcmc_params, fncdf, fninv)
 %
 % Given data from an experiment where observers discriminate between two
 % stimulus alternatives on every trial and provides confidence ratings,
-% fits d' and meta-d' using MCMC implemented in
+% fits equal-variance d' and meta-d' using MCMC implemented in
 % JAGS. Requires matjags and JAGS to be installed
 % (see http://psiexp.ss.uci.edu/research/programs_data/jags/)
 %
-% Use fit_meta_d_mcmc if you are estimating single-subject data. This
-% function will estimate group-level parameter distributions over meta-d'/d' from the set of
+% This function will estimate group-level parameter distributions over meta-d'/d' from the set of
 % all subjects' choices, having taken into account uncertainty in model
 % fits at the single-subject level.
 %
@@ -49,14 +48,15 @@ function fit = fit_meta_d_mcmc_group(nR_S1, nR_S2, mcmc_params, fncdf, fninv)
 % responded S2, rating=2 : 5 times
 % responded S2, rating=3 : 1 time
 %
-% if not specified, s is set to a default value of 1.
-% the function SDT_MLE_fit available at
-% http://www.columbia.edu/~bsm2105/type2sdt/
-% can be used to get an MLE estimate of s using Matlab's optimization
-% toolbox. This is somewhat deprecated in the hierarchical fit as it is not
-% obvious whether s should be specified for each subject individually.
-% Doing so would be a simple modification of this function to allow s to
-% be a vector of length N subjects.
+%
+% and if nR_S2 = [2 6 9 18 40 110], then when stimulus S2 was
+% presented, the subject had the following response counts:
+% responded S1, rating=3 : 2 times
+% responded S1, rating=2 : 6 times
+% responded S1, rating=1 : 9 times
+% responded S2, rating=1 : 18 times
+% responded S2, rating=2 : 40 times
+% responded S2, rating=3 : 110 times
 %
 % * fncdf
 % a function handle for the CDF of the type 1 distribution.
@@ -73,6 +73,7 @@ function fit = fit_meta_d_mcmc_group(nR_S1, nR_S2, mcmc_params, fncdf, fninv)
 % parameters:
 %
 %     mcmc_params.response_conditional = 0; % Do we want to fit response-conditional meta-d'?
+%     mcmc_params.estimate_dprime = 1;    % Do we want to estimate d' in same model?
 %     mcmc_params.nchains = 3; % How Many Chains?
 %     mcmc_params.nburnin = 1000; % How Many Burn-in Samples?
 %     mcmc_params.nsamples = 10000;  %How Many Recorded Samples?
@@ -127,6 +128,15 @@ function fit = fit_meta_d_mcmc_group(nR_S1, nR_S2, mcmc_params, fncdf, fninv)
 % nR_S1{2} = [1540  933  953  724  455  219   79   25];
 % nR_S2{2} = [35   76  220  469  713 1020  973 1560];
 
+cwd = pwd;
+findpath = which('Bayes_metad_group.txt');
+if isempty(findpath)
+    error('Please add HMetaD directory to the path')
+else
+    hmmPath = fileparts(findpath);
+    cd(hmmPath)
+end
+
 if ~exist('fncdf','var') || isempty(fncdf)
     fncdf = @normcdf;
 end
@@ -138,7 +148,7 @@ end
 Nsubj = length(nR_S1);
 nRatings = length(nR_S1{1})/2;
 
-for n = 1:Nsubj    
+for n = 1:Nsubj
     if length(nR_S1{n}) ~= nRatings*2 || length(nR_S2{n}) ~= nRatings*2
         error('Subjects do not have equal numbers of response categories');
     end
@@ -150,16 +160,16 @@ for n = 1:Nsubj
     adj_f = 1/length(nR_S1{n});
     nR_S1_adj = nR_S1{n} + adj_f;
     nR_S2_adj = nR_S2{n} + adj_f;
-        
+    
     ratingHR  = [];
     ratingFAR = [];
     for c = 2:nRatings*2
         ratingHR(end+1) = sum(nR_S2_adj(c:end)) / sum(nR_S2_adj);
         ratingFAR(end+1) = sum(nR_S1_adj(c:end)) / sum(nR_S1_adj);
     end
-
+    
     t1_index = nRatings;
-
+    
     d1(n) = fninv(ratingHR(t1_index)) - fninv(ratingFAR(t1_index));
     c1(n) = fninv(ratingHR(t1_index)) + fninv(ratingFAR(t1_index));
 end
@@ -219,18 +229,15 @@ fprintf( 'Running JAGS ...\n' );
 toc
 
 % Package group-level output
-fit.d1 = stats.mean.d1;
-fit.c1 = stats.mean.c;
-
 if ~mcmc_params.response_conditional
     
     fit.mu_Mratio = stats.mean.mu_Mratio;
     fit.sigma_Mratio = stats.mean.sigma_Mratio;
     fit.Mratio = stats.mean.Mratio;
-    fit.meta_d   = fit.Mratio.*fit.d1;
-
+    fit.meta_d   = fit.Mratio.*stats.mean.d1;
+    
 else
-
+    
     fit.mu_Mratio_rS1 = stats.mean.mu_Mratio_rS1;
     fit.mu_Mratio_rS2 = stats.mean.mu_Mratio_rS2;
     fit.sigma_Mratio_rS1 = stats.mean.sigma_Mratio_rS1;
@@ -239,16 +246,18 @@ else
     fit.Mratio_rS2 = stats.mean.Mratio_rS2;
     fit.meta_d_rS1   = fit.Mratio_rS1.*fit.d1;
     fit.meta_d_rS2   = fit.Mratio_rS2.*fit.d1;
-
+    
 end
 
 if isrow(stats.mean.cS1)
     stats.mean.cS1 = stats.mean.cS1';
     stats.mean.cS2 = stats.mean.cS2';
 end
-    
+
 fit.t2ca_rS1  = stats.mean.cS1;
 fit.t2ca_rS2  = stats.mean.cS2;
+fit.d1 = stats.mean.d1;
+fit.c1 = stats.mean.c;
 
 fit.mcmc.dic = stats.dic;
 fit.mcmc.Rhat = stats.Rhat;
@@ -362,3 +371,4 @@ for n = 1:Nsubj
     fit.est_FAR2_rS2(n,:) = est_FAR2_rS2;
     fit.obs_FAR2_rS2(n,:) = obs_FAR2_rS2;
 end
+cd(cwd);

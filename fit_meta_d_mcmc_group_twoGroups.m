@@ -3,8 +3,8 @@ function fit = fit_meta_d_mcmc_group_twoGroups(nR_S1, nR_S2, grpind, mcmc_params
 %
 % See fit_meta_d_mcmc_group for further details
 %
-% grpind is a 1xNsubjects vector of 0's and 1's indicating membership of group A (=0)
-% or group B (=1)
+% grpind is a 1xNsubjects vector of 1's and 2's indicating membership of group A (=1)
+% or group B (=2)
 %
 % Steve Fleming 2015
 
@@ -78,7 +78,7 @@ switch mcmc_params.estimate_dprime
 end
 
 model_file = 'Bayes_metad_group_twoGroups.txt';
-monitorparams = {'d1', 'c', 'mu_Mratio','sigma_Mratio','mu_MratioG','sigma_MratioG','diff','MratioBaseline','Mratio','cS1','cS2'};
+monitorparams = {'d1', 'c', 'diff_mu_Mratio', 'mu_Mratio','sigma_Mratio','Mratio','cS1','cS2'};
 
 
 % Use JAGS to Sample
@@ -107,10 +107,7 @@ fit.d1 = stats.mean.d1;
 fit.c1 = stats.mean.c;
 fit.mu_Mratio = stats.mean.mu_Mratio;
 fit.sigma_Mratio = stats.mean.sigma_Mratio;
-fit.mu_MratioG = stats.mean.mu_MratioG;
-fit.sigma_MratioG = stats.mean.sigma_MratioG;
-fit.diff = stats.mean.diff;
-fit.MratioBaseline = stats.mean.MratioBaseline;
+fit.mu_diff = stats.mean.diff_mu_Mratio;
 fit.Mratio = stats.mean.Mratio;
 fit.meta_d   = fit.Mratio.*fit.d1;
 
