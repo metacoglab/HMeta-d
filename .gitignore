@@ -13,4 +13,4 @@ Thumbs.db
 *.asv
 
 # Project ignore
-tmpjags/
+tmpjags/*
