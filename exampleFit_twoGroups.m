@@ -65,4 +65,4 @@ xlabel('Sample');
 ylabel('Difference');
 box off
 
-fprintf(['\n HDI on difference', num2str(hdi) '\n\n'])
+fprintf(['\n HDI on difference: ', num2str(hdi) '\n\n'])
