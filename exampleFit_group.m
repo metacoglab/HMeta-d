@@ -31,19 +31,5 @@ end
 % Fit group data all at once
 fit = fit_meta_d_mcmc_group(nR_S1, nR_S2);
 
-% Make some plots
-figure; 
-set(gcf, 'Units', 'normalized');
-set(gcf, 'Position', [0.2 0.2 0.5 0.4]);
-subplot(1,2,1);
-plot(d, fit.meta_d, 'o ', 'LineWidth', 2, 'MarkerSize', 8);
-xlabel('d''');
-ylabel('meta-d''');
-axis square
-box off
-
-subplot(1,2,2);
-plot(fit.mcmc.samples.mu_Mratio');
-xlabel('Sample');
-ylabel('meta-d/d''');
-box off
+% Call plotSamples to plot posterior of group Mratio
+plotSamples(fit.mcmc.samples.mu_Mratio)

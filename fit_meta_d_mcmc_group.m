@@ -25,7 +25,7 @@ function fit = fit_meta_d_mcmc_group(nR_S1, nR_S2, mcmc_params, fncdf, fninv)
 % Also allows fitting of response-conditional meta-d' via setting in mcmc_params
 % (see below). This model fits meta-d' SEPARATELY for S1 and S2 responses.
 % For more details on this model variant please see:
-
+%
 % Maniscalco & Lau (2014) Signal detection theory analysis of Type 1 and
 % Type 2 data: meta-d', response-specific meta-d' and the unequal variance
 % SDT model. In SM Fleming & CD Frith (eds) The Cognitive Neuroscience of
@@ -128,6 +128,13 @@ function fit = fit_meta_d_mcmc_group(nR_S1, nR_S2, mcmc_params, fncdf, fninv)
 % nR_S1{2} = [1540  933  953  724  455  219   79   25];
 % nR_S2{2} = [35   76  220  469  713 1020  973 1560];
 
+fprintf('\n')
+disp('----------------------------------------')
+disp('Hierarchical meta-d'' model')
+disp('https://github.com/smfleming/HMM')
+disp('----------------------------------------')
+fprintf('\n')
+
 cwd = pwd;
 findpath = which('Bayes_metad_group.txt');
 if isempty(findpath)
@@ -229,6 +236,11 @@ fprintf( 'Running JAGS ...\n' );
 toc
 
 % Package group-level output
+fit.t2ca_rS1  = stats.mean.cS1;
+fit.t2ca_rS2  = stats.mean.cS2;
+fit.d1 = stats.mean.d1;
+fit.c1 = stats.mean.c;
+
 if ~mcmc_params.response_conditional
     
     fit.mu_Mratio = stats.mean.mu_Mratio;
@@ -253,11 +265,6 @@ if isrow(stats.mean.cS1)
     stats.mean.cS1 = stats.mean.cS1';
     stats.mean.cS2 = stats.mean.cS2';
 end
-
-fit.t2ca_rS1  = stats.mean.cS1;
-fit.t2ca_rS2  = stats.mean.cS2;
-fit.d1 = stats.mean.d1;
-fit.c1 = stats.mean.c;
 
 fit.mcmc.dic = stats.dic;
 fit.mcmc.Rhat = stats.Rhat;

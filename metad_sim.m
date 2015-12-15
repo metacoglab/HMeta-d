@@ -44,6 +44,12 @@ for i = 1:nRatings
     prI_rS2(i) = ( (1-normcdf(t2c1x(nRatings+i),S1mu)) - (1-normcdf(t2c1x(nRatings+i+1),S1mu)) ) / I_area_rS2;
 end
 
+% Ensure vectors sum to 1 to avoid problems with mnrnd
+prC_rS1 = prC_rS1./sum(prC_rS1);
+prI_rS1 = prI_rS1./sum(prI_rS1);
+prC_rS2 = prC_rS2./sum(prC_rS2);
+prI_rS2 = prI_rS2./sum(prI_rS2);
+
 % Sample 4 response classes from multinomial distirbution (normalised
 % within each response class)
 nC_rS1 = mnrnd(CR,prC_rS1);

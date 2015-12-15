@@ -120,6 +120,14 @@ function fit = fit_meta_d_mcmc(nR_S1, nR_S2, mcmc_params, fncdf, fninv)
 % nR_S2 = [33   77  213  469  729 1013  975 1559];
 
 cwd = pwd;
+
+fprintf('\n')
+disp('----------------------------------------')
+disp('Hierarchical meta-d'' model')
+disp('https://github.com/smfleming/HMM')
+disp('----------------------------------------')
+fprintf('\n')
+
 findpath = which('Bayes_metad_group.txt');
 if isempty(findpath)
     error('Please add HMetaD directory to the path')
