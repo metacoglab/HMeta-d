@@ -4,7 +4,7 @@
 
 clear all
 
-Ntrials = 300;
+Ntrials = 50;
 Nsub = 20;
 c = 0;
 c1 = [-1.5 -1 -0.5];
@@ -33,3 +33,5 @@ fit = fit_meta_d_mcmc_group(nR_S1, nR_S2);
 
 % Call plotSamples to plot posterior of group Mratio
 plotSamples(fit.mcmc.samples.mu_Mratio)
+hdi = calc_HDI(fit.mcmc.samples.mu_Mratio(:));
+fprintf(['\n HDI: ', num2str(hdi) '\n\n'])

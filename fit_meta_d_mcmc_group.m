@@ -208,11 +208,11 @@ end
 switch mcmc_params.response_conditional
     case 0
         model_file = 'Bayes_metad_group.txt';
-        monitorparams = {'d1', 'c', 'mu_Mratio','sigma_Mratio','Mratio','cS1','cS2'};
+        monitorparams = {'d1', 'c1', 'mu_Mratio','sigma_Mratio','Mratio','cS1','cS2'};
         
     case 1
         model_file = 'Bayes_metad_rc_group.txt';
-        monitorparams = {'d1', 'c', 'mu_Mratio_rS1','mu_Mratio_rS2','sigma_Mratio_rS1','sigma_Mratio_rS2','Mratio_rS1','Mratio_rS2','cS1','cS2'};
+        monitorparams = {'d1', 'c1', 'mu_Mratio_rS1','mu_Mratio_rS2','sigma_Mratio_rS1','sigma_Mratio_rS2','Mratio_rS1','Mratio_rS2','cS1','cS2'};
 end
 
 % Use JAGS to Sample
@@ -236,10 +236,14 @@ fprintf( 'Running JAGS ...\n' );
 toc
 
 % Package group-level output
+if isrow(stats.mean.cS1)
+    stats.mean.cS1 = stats.mean.cS1';
+    stats.mean.cS2 = stats.mean.cS2';
+end
 fit.t2ca_rS1  = stats.mean.cS1;
 fit.t2ca_rS2  = stats.mean.cS2;
 fit.d1 = stats.mean.d1;
-fit.c1 = stats.mean.c;
+fit.c1 = stats.mean.c1;
 
 if ~mcmc_params.response_conditional
     
@@ -259,11 +263,6 @@ else
     fit.meta_d_rS1   = fit.Mratio_rS1.*fit.d1;
     fit.meta_d_rS2   = fit.Mratio_rS2.*fit.d1;
     
-end
-
-if isrow(stats.mean.cS1)
-    stats.mean.cS1 = stats.mean.cS1';
-    stats.mean.cS2 = stats.mean.cS2';
 end
 
 fit.mcmc.dic = stats.dic;

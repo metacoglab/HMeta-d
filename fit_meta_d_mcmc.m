@@ -197,11 +197,11 @@ end
 switch mcmc_params.response_conditional
     case 0
         model_file = 'Bayes_metad.txt';
-        monitorparams = {'meta_d','d1','c','cS1','cS2'};
+        monitorparams = {'meta_d','d1','c1','cS1','cS2'};
         
     case 1
         model_file = 'Bayes_metad_rc.txt';
-        monitorparams = {'meta_d_rS1','meta_d_rS2','d1','c','cS1','cS2'};
+        monitorparams = {'meta_d_rS1','meta_d_rS2','d1','c1','cS1','cS2'};
 end
 
 % Use JAGS to Sample
@@ -242,7 +242,7 @@ end
 
 
 fit.d1        = stats.mean.d1;
-fit.c1        = stats.mean.c;
+fit.c1        = stats.mean.c1;
 fit.t2ca_rS1  = stats.mean.cS1;
 fit.t2ca_rS2  = stats.mean.cS2;
 

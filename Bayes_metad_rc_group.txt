@@ -18,11 +18,11 @@ model {
     ## TYPE 1 SDT BINOMIAL MODEL
     H[s] ~ dbin(h[s],S[s])
     FA[s] ~ dbin(f[s],N[s])
-    h[s] <- phi(d1[s]/2-c[s])
-    f[s] <- phi(-d1[s]/2-c[s])
+    h[s] <- phi(d1[s]/2-c1[s])
+    f[s] <- phi(-d1[s]/2-c1[s])
 
     # Type 1 priors
-    c[s] ~ dnorm(mu_c, lambda_c)
+    c1[s] ~ dnorm(mu_c, lambda_c)
     d1[s] ~ dnorm(mu_d1, lambda_d1)
 
     ## TYPE 2 SDT MODEL (META-D)
@@ -41,20 +41,20 @@ model {
 	S1mu_rS2[s] <- -mu_rS2[s]/2
 	
 	# Calculate normalisation constants
-	C_area_rS1[s] <- phi(c[s] - S1mu_rS1[s])
-	I_area_rS1[s] <- phi(c[s] - S2mu_rS1[s])
-	C_area_rS2[s] <- 1-phi(c[s] - S2mu_rS2[s])
-	I_area_rS2[s] <- 1-phi(c[s] - S1mu_rS2[s])
+	C_area_rS1[s] <- phi(c1[s] - S1mu_rS1[s])
+	I_area_rS1[s] <- phi(c1[s] - S2mu_rS1[s])
+	C_area_rS2[s] <- 1-phi(c1[s] - S2mu_rS2[s])
+	I_area_rS2[s] <- 1-phi(c1[s] - S1mu_rS2[s])
 
 	# Get nC_rS1 probs
 	pr[s,1] <- phi(cS1[s,1] - S1mu_rS1[s])/C_area_rS1[s]  
 	for (k in 1:nratings-2) {                
   		pr[s,k+1] <- (phi(cS1[s,k+1] - S1mu_rS1[s])-phi(cS1[s,k] - S1mu_rS1[s]))/C_area_rS1[s]
 	}
-	pr[s,nratings] <- (phi(c[s] - S1mu_rS1[s])-phi(cS1[s,nratings-1] - S1mu_rS1[s]))/C_area_rS1[s]   
+	pr[s,nratings] <- (phi(c1[s] - S1mu_rS1[s])-phi(cS1[s,nratings-1] - S1mu_rS1[s]))/C_area_rS1[s]   
 
 	# Get nI_rS2 probs
-	pr[s,nratings+1] <- ((1-phi(c[s] - S1mu_rS2[s]))-(1-phi(cS2[s,1] - S1mu_rS2[s])))/I_area_rS2[s]
+	pr[s,nratings+1] <- ((1-phi(c1[s] - S1mu_rS2[s]))-(1-phi(cS2[s,1] - S1mu_rS2[s])))/I_area_rS2[s]
 	for (k in 1:nratings-2) {                
   		pr[s,nratings+1+k] <- ((1-phi(cS2[s,k] - S1mu_rS2[s]))-(1-phi(cS2[s,k+1] - S1mu_rS2[s])))/I_area_rS2[s]
 	}
@@ -65,10 +65,10 @@ model {
 	for (k in 1:nratings-2) {
   		pr[s,(nratings*2)+1+k] <- (phi(cS1[s,k+1] - S2mu_rS1[s])-phi(cS1[s,k] - S2mu_rS1[s]))/I_area_rS1[s]
 	}
-	pr[s,nratings*3] <- (phi(c[s] - S2mu_rS1[s])-phi(cS1[s,nratings-1] - S2mu_rS1[s]))/I_area_rS1[s]
+	pr[s,nratings*3] <- (phi(c1[s] - S2mu_rS1[s])-phi(cS1[s,nratings-1] - S2mu_rS1[s]))/I_area_rS1[s]
 
 	# Get nC_rS2 probs
-	pr[s,(nratings*3)+1] <- ((1-phi(c[s] - S2mu_rS2[s]))-(1-phi(cS2[s,1] - S2mu_rS2[s])))/C_area_rS2[s]
+	pr[s,(nratings*3)+1] <- ((1-phi(c1[s] - S2mu_rS2[s]))-(1-phi(cS2[s,1] - S2mu_rS2[s])))/C_area_rS2[s]
 	for (k in 1:nratings-2) {                
   		pr[s,(nratings*3)+1+k] <- ((1-phi(cS2[s,k] - S2mu_rS2[s]))-(1-phi(cS2[s,k+1] - S2mu_rS2[s])))/C_area_rS2[s]
 	}
