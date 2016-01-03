@@ -207,8 +207,14 @@ end
 % Select model file and parameters to monitor
 switch mcmc_params.response_conditional
     case 0
-        model_file = 'Bayes_metad_group.txt';
-        monitorparams = {'d1', 'c1', 'mu_Mratio','sigma_Mratio','Mratio','cS1','cS2'};
+        switch mcmc_params.estimate_dprime
+            case 0
+                model_file = 'Bayes_metad_group_nodp.txt';
+                monitorparams = {'d1', 'c1', 'mu_Mratio','sigma_Mratio','Mratio','cS1','cS2'};
+            case 1
+                model_file = 'Bayes_metad_group.txt';
+                monitorparams = {'d1', 'c1', 'mu_Mratio','sigma_Mratio','Mratio','cS1','cS2'};
+        end
         
     case 1
         model_file = 'Bayes_metad_rc_group.txt';

@@ -15,16 +15,6 @@ data {
 model {
   for (s in 1:nsubj) {
 
-    ## TYPE 1 SDT BINOMIAL MODEL
-    H[s] ~ dbin(h[s],S[s])
-    FA[s] ~ dbin(f[s],N[s])
-    h[s] <- phi(d1[s]/2-c1[s])
-    f[s] <- phi(-d1[s]/2-c1[s])
-
-    # Type 1 priors
-    c1[s] ~ dnorm(mu_c, lambda_c)
-    d1[s] ~ dnorm(mu_d1, lambda_d1)
-
     ## TYPE 2 SDT MODEL (META-D)
 	# Multinomial likelihood for response counts ordered as c(nR_S1,nR_S2)
     counts[s,1:nratings] ~ dmulti(prT[s,1:nratings],CR[s])
@@ -89,13 +79,6 @@ model {
 	}
 	
   	# hyperpriors
-    mu_d1 ~ dnorm(0, 0.25)
-    mu_c ~ dnorm(0, 0.25)
-    sigma_d1 ~ dnorm(0, 0.25) I(0, )
-    sigma_c ~ dnorm(0, 0.25) I(0, )
-    lambda_d1 <- pow(sigma_d1, -2)
-    lambda_c <- pow(sigma_c, -2)
-
     mu_cS1 ~ dnorm(0, 0.25)
     mu_cS2 ~ dnorm(0, 0.25)
     sigma_cS1 ~ dnorm(0, 0.25) I(0, )
@@ -105,7 +88,7 @@ model {
 
     mu_log_Mratio ~ dnorm(0, 2)
     mu_Mratio <- exp(mu_log_Mratio)
-    sigma_delta ~ dnorm(0,0.25) I(0,)
+    sigma_delta ~ dnorm(0, 1) I(0,)
     lambda_delta <- pow(sigma_delta, -2)
     epsilon_Mratio ~ dbeta(1,1)
     sigma_Mratio <- abs(epsilon_Mratio)*sigma_delta

@@ -4,7 +4,7 @@
 
 clear all
 
-Ntrials = 50;
+Ntrials = 100;
 Nsub = 20;
 c = 0;
 c1 = [-1.5 -1 -0.5];
@@ -13,6 +13,9 @@ c2 = [0.5 1 1.5];
 group_d = 2;
 group_mratio = 0.8;
 sigma = 0.5;
+
+mcmc_params = fit_meta_d_params;
+mcmc_params.estimate_dprime = 0;
 
 for i = 1:Nsub
         
@@ -29,7 +32,7 @@ for i = 1:Nsub
 end
 
 % Fit group data all at once
-fit = fit_meta_d_mcmc_group(nR_S1, nR_S2);
+fit = fit_meta_d_mcmc_group(nR_S1, nR_S2, mcmc_params);
 
 % Call plotSamples to plot posterior of group Mratio
 plotSamples(fit.mcmc.samples.mu_Mratio)
