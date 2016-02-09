@@ -3,7 +3,7 @@ HMM
 
 Hierarchical meta-d' model
 
-***this is a beta version under active development***
+***beta version - under active development***
 
 Steve Fleming
 stephen.fleming@ucl.ac.uk 
