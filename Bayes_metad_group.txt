@@ -85,27 +85,27 @@ model {
 	cS2[s,1:nratings-1] <- sort(cS2_raw[s, ])
     
     delta[s] ~ dnorm(0, lambda_delta)
-    Mratio[s] <- mu_Mratio + epsilon_Mratio*delta[s]
+    Mratio[s] <- abs(mu_Mratio + epsilon_Mratio*delta[s])
 	}
 	
   	# hyperpriors
-    mu_d1 ~ dnorm(0, 0.25)
-    mu_c ~ dnorm(0, 0.25)
-    sigma_d1 ~ dnorm(0, 0.25) I(0, )
-    sigma_c ~ dnorm(0, 0.25) I(0, )
+    mu_d1 ~ dnorm(0, 0.01)
+    mu_c ~ dnorm(0, 0.01)
+    sigma_d1 ~ dnorm(0, 0.01) I(0, )
+    sigma_c ~ dnorm(0, 0.01) I(0, )
     lambda_d1 <- pow(sigma_d1, -2)
     lambda_c <- pow(sigma_c, -2)
 
-    mu_cS1 ~ dnorm(0, 0.25)
-    mu_cS2 ~ dnorm(0, 0.25)
-    sigma_cS1 ~ dnorm(0, 0.25) I(0, )
-    sigma_cS2 ~ dnorm(0, 0.25) I(0, )
+    mu_cS1 ~ dnorm(0, 0.01)
+    mu_cS2 ~ dnorm(0, 0.01)
+    sigma_cS1 ~ dnorm(0, 0.01) I(0, )
+    sigma_cS2 ~ dnorm(0, 0.01) I(0, )
     lambda_cS1 <- pow(sigma_cS1, -2)
     lambda_cS2 <- pow(sigma_cS2, -2)
 
     mu_log_Mratio ~ dnorm(0, 2)
     mu_Mratio <- exp(mu_log_Mratio)
-    sigma_delta ~ dnorm(0,0.25) I(0,)
+    sigma_delta ~ dnorm(0, 4) I(0,)
     lambda_delta <- pow(sigma_delta, -2)
     epsilon_Mratio ~ dbeta(1,1)
     sigma_Mratio <- abs(epsilon_Mratio)*sigma_delta
