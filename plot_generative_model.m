@@ -1,7 +1,7 @@
 % Shows underlying SDT model and relationship to multinomial probabilities
 % for fitted type 2 data
 %
-% Requires fit, nR_S1 and nR_S2 objects from either HMM or MLE meta-d fit to be in the
+% Requires fit, nR_S1 and nR_S2 objects from either subject-level HMM or MLE meta-d fit to be in the
 % workspace
 %
 % SF 2014
@@ -12,14 +12,14 @@ set(gcf, 'Position', [0.2 0.2 0.5 0.3]);
 base = linspace(-4,4,500);
 
 subplot(1,2,1);
-mu1 = fit.meta_da./2;
+mu1 = fit.meta_d./2;
 S = normpdf(base, mu1, 1);
 N = normpdf(base, -mu1, 1);
 plot(base, S, 'k', 'LineWidth', 2);
 hold on
 plot(base, N, 'k--', 'LineWidth', 2);
 set(gca, 'YLim', [0 0.5], 'FontSize',12);
-line([fit.meta_ca fit.meta_ca],[0 0.5],'Color','k','LineWidth',1);
+line([fit.c1 fit.c1],[0 0.5],'Color','k','LineWidth',1);
 for i = 1:length(fit.t2ca_rS1)
     line([fit.t2ca_rS1(i) fit.t2ca_rS1(i)],[0 0.5], 'Color', 'k', 'LineStyle', '--', 'LineWidth', 1);
     line([fit.t2ca_rS2(i) fit.t2ca_rS2(i)],[0 0.5], 'Color', 'k', 'LineStyle', '--', 'LineWidth', 1);

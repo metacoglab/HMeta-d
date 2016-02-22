@@ -6,7 +6,7 @@ function mcmc_params = fit_meta_d_params()
 % SF 2015
 
 mcmc_params.response_conditional = 0;
-mcmc_params.estimate_dprime = 1;
+mcmc_params.estimate_dprime = 0;
 mcmc_params.nchains = 3; % How Many Chains?
 mcmc_params.nburnin = 3000; % How Many Burn-in Samples?
 mcmc_params.nsamples = 10000;  %How Many Recorded Samples?
