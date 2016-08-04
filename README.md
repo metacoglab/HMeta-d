@@ -1,7 +1,7 @@
-HMM
+HMeta-d
 ===
 
-Hierarchical meta-d' model
+Hierarchical meta-d' model (HMeta-d)
 
 ***beta version - under active development***
 
