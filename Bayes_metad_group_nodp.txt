@@ -75,7 +75,7 @@ model {
 	cS2[s,1:nratings-1] <- sort(cS2_raw[s, ])
     
     delta[s] ~ dnorm(0, lambda_delta)
-    logMratio[s] <- mu_Mratio + epsilon_Mratio*delta[s]
+    logMratio[s] <- mu_logMratio + epsilon_logMratio*delta[s]
     Mratio[s] <- exp(logMratio[s])
 	}
 	
@@ -84,10 +84,10 @@ model {
 	sigma_c2 ~ dnorm(0, 0.01) I(0, )
 	lambda_c2 <- pow(sigma_c2, -2)
 	
-    mu_Mratio ~ dnorm(0, 0.5)
-    sigma_delta ~ dnorm(0, 0.5) I(0,)
+    mu_logMratio ~ dnorm(0, 1)
+    sigma_delta ~ dnorm(0, 1) I(0,)
     lambda_delta <- pow(sigma_delta, -2)
-    epsilon_Mratio ~ dbeta(1,1)
-    sigma_Mratio <- abs(epsilon_Mratio)*sigma_delta
+    epsilon_logMratio ~ dbeta(1,1)
+    sigma_logMratio <- abs(epsilon_logMratio)*sigma_delta
   
 }

@@ -35,6 +35,6 @@ end
 fit = fit_meta_d_mcmc_group(nR_S1, nR_S2, mcmc_params);
 
 % Call plotSamples to plot posterior of group Mratio
-plotSamples(exp(fit.mcmc.samples.mu_Mratio))
-hdi = calc_HDI(exp(fit.mcmc.samples.mu_Mratio(:)));
-fprintf(['\n HDI: ', num2str(hdi) '\n\n'])
+plotSamples(exp(fit.mcmc.samples.mu_logMratio))
+hdi = calc_HDI(exp(fit.mcmc.samples.mu_logMratio(:)));
+fprintf(['\n HDI on meta-d/d: ', num2str(hdi) '\n\n'])

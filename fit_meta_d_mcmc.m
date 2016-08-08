@@ -3,7 +3,7 @@ function fit = fit_meta_d_mcmc(nR_S1, nR_S2, mcmc_params, fncdf, fninv)
 %
 % Given data from an experiment where an observer discriminates between two
 % stimulus alternatives on every trial and provides confidence ratings,
-% fits both d' and meta-d' using MCMC implemented in
+% fits meta-d' using MCMC implemented in
 % JAGS. Requires JAGS to be installed
 % (see http://psiexp.ss.uci.edu/research/programs_data/jags/)
 %
@@ -113,11 +113,7 @@ function fit = fit_meta_d_mcmc(nR_S1, nR_S2, mcmc_params, fncdf, fninv)
 % Parts of this code are adapted from Brian Maniscalco's meta-d' toolbox
 % which can be found at http://www.columbia.edu/~bsm2105/type2sdt/
 %
-% Updated 12/10/15 to include estimation of type 1 d' within same model
-
-% toy data
-% nR_S1 = [1552  933  954  720  448  220   78   27];
-% nR_S2 = [33   77  213  469  729 1013  975 1559];
+% Updated 12/10/15 to allow estimation of type 1 d' within same model
 
 cwd = pwd;
 
@@ -175,7 +171,7 @@ if ~exist('mcmc_params','var') || isempty(mcmc_params)
     mcmc_params.response_conditional = 0;
     mcmc_params.estimate_dprime = 1;    % also estimate dprime in same model?
     mcmc_params.nchains = 3; % How Many Chains?
-    mcmc_params.nburnin = 3000; % How Many Burn-in Samples?
+    mcmc_params.nburnin = 1000; % How Many Burn-in Samples?
     mcmc_params.nsamples = 10000;  %How Many Recorded Samples?
     mcmc_params.nthin = 1; % How Often is a Sample Recorded?
     mcmc_params.doparallel = 0; % Parallel Option

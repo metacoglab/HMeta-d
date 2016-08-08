@@ -78,10 +78,10 @@ model {
 	cS2[s,1:nratings-1] <- sort(cS2_raw[s, ])
 
     delta_rS1[s] ~ dnorm(0, lambda_delta_rS1)
-    logMratio_rS1[s] <- mu_Mratio_rS1 + epsilon_Mratio_rS1*delta_rS1[s]
+    logMratio_rS1[s] <- mu_logMratio_rS1 + epsilon_logMratio_rS1*delta_rS1[s]
     Mratio_rS1[s] <- exp(logMratio_rS1[s])
     delta_rS2[s] ~ dnorm(0, lambda_delta_rS2)
-    logMratio_rS2[s] <- mu_Mratio_rS2 + epsilon_Mratio_rS2*delta_rS2[s]
+    logMratio_rS2[s] <- mu_logMratio_rS2 + epsilon_logMratio_rS2*delta_rS2[s]
     Mratio_rS2[s] <- exp(logMratio_rS2[s])
 	
 	}
@@ -91,16 +91,16 @@ model {
 	sigma_c2 ~ dnorm(0, 0.01) I(0, )
 	lambda_c2 <- pow(sigma_c2, -2)
 
-    mu_Mratio_rS1 ~ dnorm(0, 0.5)
+    mu_logMratio_rS1 ~ dnorm(0, 1)
     sigma_delta_rS1 ~ dnorm(0, 1) I(0,)
     lambda_delta_rS1 <- pow(sigma_delta_rS1, -2)
-    epsilon_Mratio_rS1 ~ dbeta(1,1)
-    sigma_Mratio_rS1 <- abs(epsilon_Mratio_rS1)*sigma_delta_rS1
+    epsilon_logMratio_rS1 ~ dbeta(1,1)
+    sigma_logMratio_rS1 <- abs(epsilon_logMratio_rS1)*sigma_delta_rS1
 
-    mu_Mratio_rS2 ~ dnorm(0, 0.5)
+    mu_logMratio_rS2 ~ dnorm(0, 1)
     sigma_delta_rS2 ~ dnorm(0, 1) I(0,)
     lambda_delta_rS2 <- pow(sigma_delta_rS2, -2)
-    epsilon_Mratio_rS2 ~ dbeta(1,1)
-    sigma_Mratio_rS2 <- abs(epsilon_Mratio_rS2)*sigma_delta_rS2
+    epsilon_logMratio_rS2 ~ dbeta(1,1)
+    sigma_logMratio_rS2 <- abs(epsilon_logMratio_rS2)*sigma_delta_rS2
 
 }

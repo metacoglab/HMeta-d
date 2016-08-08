@@ -44,11 +44,11 @@ fit1 = fit_meta_d_mcmc_group(DATA(1).nR_S1, DATA(1).nR_S2);
 fit2 = fit_meta_d_mcmc_group(DATA(2).nR_S1, DATA(2).nR_S2);
 
 % Compute HDI of difference
-sampleDiff = fit1.mcmc.samples.mu_Mratio - fit2.mcmc.samples.mu_Mratio;
+sampleDiff = fit1.mcmc.samples.mu_logMratio - fit2.mcmc.samples.mu_logMratio;
 hdi = calc_HDI(sampleDiff(:));
 fprintf(['\n HDI on difference in log(meta-d''/d''): ', num2str(hdi) '\n\n'])
 
 % Plot group Mratio and the difference
-plotSamples(exp(fit1.mcmc.samples.mu_Mratio))
-plotSamples(exp(fit2.mcmc.samples.mu_Mratio))
+plotSamples(exp(fit1.mcmc.samples.mu_logMratio))
+plotSamples(exp(fit2.mcmc.samples.mu_logMratio))
 plotSamples(sampleDiff)

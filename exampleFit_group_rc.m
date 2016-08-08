@@ -23,10 +23,6 @@ for i = 1:Nsub
     % Generate data
     sim = type2_SDT_sim(d(i), noise, c, c1, c2, Ntrials);
     
-    % Avoid zero counts
-    sim.nR_S1(sim.nR_S1 == 0) = 1;
-    sim.nR_S2(sim.nR_S2 == 0) = 1;
-    
     nR_S1{i} = sim.nR_S1;
     nR_S2{i} = sim.nR_S2;
     
@@ -41,5 +37,5 @@ mcmc_params.response_conditional = 1;
 fit = fit_meta_d_mcmc_group(nR_S1, nR_S2, mcmc_params);
 
 % Plot output
-plotSamples(fit.mcmc.samples.mu_Mratio_rS1)
-plotSamples(fit.mcmc.samples.mu_Mratio_rS2)
+plotSamples(exp(fit.mcmc.samples.mu_logMratio_rS1))
+plotSamples(exp(fit.mcmc.samples.mu_logMratio_rS2))

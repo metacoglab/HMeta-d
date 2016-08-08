@@ -20,5 +20,5 @@ fit = fit_meta_d_mcmc(sim.nR_S1, sim.nR_S2, mcmc_params);
 hdi = calc_HDI(fit.mcmc.samples.meta_d(:));
 fprintf(['\n HDI: ', num2str(hdi) '\n\n'])
 
-% Visualise fits
+% Visualise single-subject fits
 metad_visualise
