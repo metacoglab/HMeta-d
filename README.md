@@ -3,8 +3,6 @@ HMeta-d
 
 Hierarchical meta-d' model (HMeta-d)
 
-***beta version - under active development***
-
 Steve Fleming
 stephen.fleming@ucl.ac.uk 
 
@@ -15,7 +13,7 @@ The code is designed to work “out of the box” without much coding on the par
 1) To get started, you need to first ensure JAGS (an MCMC language similar to BUGS) is installed on your machine. See here for further details:
 
 http://mcmc-jags.sourceforge.net/
-The code has been tested on JAGS 3.4.0; there are known compatibility issues with JAGS 4.X.
+The code has been tested on JAGS 3.4.0; there are compatibility issues between matjags and JAGS 4.X. The model files should work with later versions of JAGS when called from R.
 
 2) The main functions are fit_meta_d_mcmc (for fitting individual subject data) and fit_meta_d_mcmc_group (for hierarchical fits of group data). More information is contained in the help of these two functions. To get started try running exampleFit or exampleFit_group.
 
