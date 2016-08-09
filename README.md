@@ -15,6 +15,6 @@ The code is designed to work “out of the box” without much coding on the par
 http://mcmc-jags.sourceforge.net/
 The code has been tested on JAGS 3.4.0; there are compatibility issues between matjags and JAGS 4.X. The model files should work with later versions of JAGS when called from R.
 
-2) The main functions are fit_meta_d_mcmc (for fitting individual subject data) and fit_meta_d_mcmc_group (for hierarchical fits of group data). More information is contained in the help of these two functions. To get started try running exampleFit or exampleFit_group.
+2) The main functions are fit_meta_d_mcmc (for fitting individual subject data) and fit_meta_d_mcmc_group (for hierarchical fits of group data). More information is contained in the help of these two functions and in the wiki https://github.com/smfleming/HMM/wiki/HMeta-d-tutorial. To get started try running exampleFit or exampleFit_group.
 
 Please get in touch with your experiences with using the toolbox, and any bug reports or issues to me at stephen.fleming@ucl.ac.uk 
