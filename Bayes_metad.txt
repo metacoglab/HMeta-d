@@ -5,8 +5,8 @@ data {
     N <- sum(counts[1:nratings*2])
     S <- sum(counts[(nratings*2)+1:nratings*4])
     H <- sum(counts[(nratings*3)+1:nratings*4])
-    FA <- sum(counts[(nratings*2)+1:nratings*3])
-    M <- sum(counts[nratings+1:nratings*2])
+    M <- sum(counts[(nratings*2)+1:nratings*3])
+    FA <- sum(counts[nratings+1:nratings*2])
     CR <- sum(counts[1:nratings])
 }
 
@@ -25,8 +25,8 @@ d1 ~ dnorm(0, 0.5)
 ## TYPE 2 SDT MODEL (META-D)
 # Multinomial likelihood for response counts ordered as c(nR_S1,nR_S2)
 counts[1:nratings] ~ dmulti(prT[1:nratings],CR)
-counts[nratings+1:nratings*2] ~ dmulti(prT[nratings+1:nratings*2],M)
-counts[(nratings*2)+1:nratings*3] ~ dmulti(prT[(nratings*2)+1:nratings*3],FA)
+counts[nratings+1:nratings*2] ~ dmulti(prT[nratings+1:nratings*2],FA)
+counts[(nratings*2)+1:nratings*3] ~ dmulti(prT[(nratings*2)+1:nratings*3],M)
 counts[(nratings*3)+1:nratings*4] ~ dmulti(prT[(nratings*3)+1:nratings*4],H)
 
 # Means of SDT distributions

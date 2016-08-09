@@ -6,16 +6,16 @@ data {
         N[s,1] <- sum(counts1[s,1:nratings*2])
         S[s,1] <- sum(counts1[s,(nratings*2)+1:nratings*4])
         H[s,1] <- sum(counts1[s,(nratings*3)+1:nratings*4])
-        FA[s,1] <- sum(counts1[s,(nratings*2)+1:nratings*3])
-        M[s,1] <- sum(counts1[s,nratings+1:nratings*2])
+        M[s,1] <- sum(counts1[s,(nratings*2)+1:nratings*3])
+        FA[s,1] <- sum(counts1[s,nratings+1:nratings*2])
         CR[s,1] <- sum(counts1[s,1:nratings])
         
         # Type 1 counts for task 2
         N[s,2] <- sum(counts2[s,1:nratings*2])
         S[s,2] <- sum(counts2[s,(nratings*2)+1:nratings*4])
         H[s,2] <- sum(counts2[s,(nratings*3)+1:nratings*4])
-        FA[s,2] <- sum(counts2[s,(nratings*2)+1:nratings*3])
-        M[s,2] <- sum(counts2[s,nratings+1:nratings*2])
+        M[s,2] <- sum(counts2[s,(nratings*2)+1:nratings*3])
+        FA[s,2] <- sum(counts2[s,nratings+1:nratings*2])
         CR[s,2] <- sum(counts2[s,1:nratings])
     }
 }
@@ -26,13 +26,13 @@ model {
     ## TYPE 2 SDT MODEL (META-D)
 	# Multinomial likelihood for response counts ordered as c(nR_S1,nR_S2)
     counts1[s,1:nratings] ~ dmulti(prT[s,1:nratings,1],CR[s,1])
-    counts1[s,nratings+1:nratings*2] ~ dmulti(prT[s,nratings+1:nratings*2,1],M[s,1])
-    counts1[s,(nratings*2)+1:nratings*3] ~ dmulti(prT[s,(nratings*2)+1:nratings*3,1],FA[s,1])
+    counts1[s,nratings+1:nratings*2] ~ dmulti(prT[s,nratings+1:nratings*2,1],FA[s,1])
+    counts1[s,(nratings*2)+1:nratings*3] ~ dmulti(prT[s,(nratings*2)+1:nratings*3,1],M[s,1])
     counts1[s,(nratings*3)+1:nratings*4] ~ dmulti(prT[s,(nratings*3)+1:nratings*4,1],H[s,1])
     
     counts2[s,1:nratings] ~ dmulti(prT[s,1:nratings,2],CR[s,2])
-    counts2[s,nratings+1:nratings*2] ~ dmulti(prT[s,nratings+1:nratings*2,2],M[s,2])
-    counts2[s,(nratings*2)+1:nratings*3] ~ dmulti(prT[s,(nratings*2)+1:nratings*3,2],FA[s,2])
+    counts2[s,nratings+1:nratings*2] ~ dmulti(prT[s,nratings+1:nratings*2,2],FA[s,2])
+    counts2[s,(nratings*2)+1:nratings*3] ~ dmulti(prT[s,(nratings*2)+1:nratings*3,2],M[s,2])
     counts2[s,(nratings*3)+1:nratings*4] ~ dmulti(prT[s,(nratings*3)+1:nratings*4,2],H[s,2])
     
     for (task in 1:2) {
