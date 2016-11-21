@@ -299,9 +299,9 @@ switch mcmc_params.response_conditional
         fit.meta_d_rS1    = stats.mean.meta_d_rS1;
         fit.meta_d_rS2    = stats.mean.meta_d_rS2;
         fit.M_ratio_rS1 = mean(samples.meta_d_rS1(:)./d1_samples);
-        fit.M_ratio_rS2 = mean(samples.meta_d_rS1(:)./d1_samples);
+        fit.M_ratio_rS2 = mean(samples.meta_d_rS2(:)./d1_samples);
         fit.M_ratio_rS1 = mean(samples.meta_d_rS1(:) - d1_samples);
-        fit.M_ratio_rS2 = mean(samples.meta_d_rS1(:) - d1_samples);
+        fit.M_ratio_rS2 = mean(samples.meta_d_rS2(:) - d1_samples);
         
         %% find estimated t2FAR and t2HR
         S1mu_rS1 = -stats.mean.meta_d_rS1/2; S1sd = 1;
