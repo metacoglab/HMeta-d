@@ -187,6 +187,9 @@ if ~exist('mcmc_params','var') || isempty(mcmc_params)
     mcmc_params.nthin = 1; % How Often is a Sample Recorded?
     mcmc_params.doparallel = 0; % Parallel Option
     mcmc_params.dic = 1;
+end
+% Ensure init0 is correct size
+if ~isfield(mcmc_params, 'init0')
     for i=1:mcmc_params.nchains
         mcmc_params.init0(i) = struct;
     end

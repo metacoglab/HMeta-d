@@ -13,6 +13,7 @@ mcmc_params.nsamples = 10000;  %How Many Recorded Samples?
 mcmc_params.nthin = 1; % How Often is a Sample Recorded?
 mcmc_params.doparallel = 0; % Parallel Option
 mcmc_params.dic = 1;
-for i=1:mcmc_params.nchains
-    mcmc_params.init0(i) = struct;
-end
+%% These lines are now part of main functions to avoid issues when changing chain number
+% for i=1:mcmc_params.nchains
+%     mcmc_params.init0(i) = struct;
+% end
