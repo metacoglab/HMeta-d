@@ -11,7 +11,7 @@ function fit = fit_meta_d_mcmc(nR_S1, nR_S2, mcmc_params, fncdf, fninv)
 %
 % Lee (2008) BayesSDT: Software for Bayesian inference with signal
 % detection theory. Behavior Research Methods 40 (2), 450-456
-% 
+%
 % For more information on the meta-d' model please see:
 %
 % Maniscalco B, Lau H (2012) A signal detection theoretic approach for
@@ -242,7 +242,9 @@ fit.c1        = stats.mean.c1;
 fit.t2ca_rS1  = stats.mean.cS1;
 fit.t2ca_rS2  = stats.mean.cS2;
 
-fit.mcmc.dic = stats.dic;
+if  mcmc_params.dic
+    fit.mcmc.dic = stats.dic;
+end
 fit.mcmc.Rhat = stats.Rhat;
 fit.mcmc.samples = samples;
 fit.mcmc.params = mcmc_params;
@@ -300,13 +302,13 @@ switch mcmc_params.response_conditional
         fit.meta_d_rS2    = stats.mean.meta_d_rS2;
         fit.M_ratio_rS1 = mean(samples.meta_d_rS1(:)./d1_samples);
         fit.M_ratio_rS2 = mean(samples.meta_d_rS2(:)./d1_samples);
-        fit.M_ratio_rS1 = mean(samples.meta_d_rS1(:) - d1_samples);
-        fit.M_ratio_rS2 = mean(samples.meta_d_rS2(:) - d1_samples);
+        fit.M_diff_rS1 = mean(samples.meta_d_rS1(:) - d1_samples);
+        fit.M_diff_rS2 = mean(samples.meta_d_rS2(:) - d1_samples);
         
         %% find estimated t2FAR and t2HR
         S1mu_rS1 = -stats.mean.meta_d_rS1/2; S1sd = 1;
         S2mu_rS1 =  stats.mean.meta_d_rS1/2; S2sd = S1sd/s;
-        S1mu_rS2 = -stats.mean.meta_d_rS2/2; 
+        S1mu_rS2 = -stats.mean.meta_d_rS2/2;
         S2mu_rS2 =  stats.mean.meta_d_rS2/2;
         
         C_area_rS2 = 1-fncdf(fit.c1,S2mu_rS2,S2sd);
