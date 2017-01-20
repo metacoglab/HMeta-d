@@ -173,7 +173,7 @@ for n = 1:Nsubj
     t1_index = nRatings;
     
     d1(n) = fninv(ratingHR(t1_index)) - fninv(ratingFAR(t1_index));
-    c1(n) = fninv(ratingHR(t1_index)) + fninv(ratingFAR(t1_index));
+    c1(n) = -0.5 .* (fninv(ratingHR(t1_index)) + fninv(ratingFAR(t1_index)));
 end
 
 %% Sampling

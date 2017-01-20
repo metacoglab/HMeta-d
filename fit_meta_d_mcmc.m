@@ -163,7 +163,7 @@ end
 t1_index = nRatings;
 
 d1 = fninv(ratingHR(t1_index)) - fninv(ratingFAR(t1_index));
-c1 = fninv(ratingHR(t1_index)) + fninv(ratingFAR(t1_index));
+c1 = -0.5 .* (fninv(ratingHR(t1_index)) + fninv(ratingFAR(t1_index)));
 
 %% Sampling
 if ~exist('mcmc_params','var') || isempty(mcmc_params)
