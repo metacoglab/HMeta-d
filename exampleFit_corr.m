@@ -64,5 +64,3 @@ ci = calc_CI(fit.mcmc.samples.rho(:));
 line([ci(1) ci(2)],[0.002 0.002], 'LineWidth', 3, 'Color', [1 1 1])
 box off
 set(gca, 'FontSize', 14, 'XLim', [-1 1])
-
-export_fig('corrSamples.png', '-transparent', '-painters', '-r600', h1)
