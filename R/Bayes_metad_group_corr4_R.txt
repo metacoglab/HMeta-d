@@ -1,0 +1,180 @@
+# Bayesian estimation of meta-d/d for group correlation between 4 domains
+
+data {
+    for (s in 1:nsubj) {
+        # Type 1 counts for task 1
+        N[s,1] <- sum(counts1[s,1:(nratings*2)])
+        S[s,1] <- sum(counts1[s,(nratings*2+1):(nratings*4)])
+        H[s,1] <- sum(counts1[s,(nratings*3+1):(nratings*4)])
+        M[s,1] <- sum(counts1[s,(nratings*2+1):(nratings*3)])
+        FA[s,1] <- sum(counts1[s,(nratings+1):(nratings*2)])
+        CR[s,1] <- sum(counts1[s,1:(nratings)])
+        
+        # Type 1 counts for task 2
+        N[s,2] <- sum(counts2[s,1:(nratings*2)])
+        S[s,2] <- sum(counts2[s,(nratings*2+1):(nratings*4)])
+        H[s,2] <- sum(counts2[s,(nratings*3+1):(nratings*4)])
+        M[s,2] <- sum(counts2[s,(nratings*2+1):(nratings*3)])
+        FA[s,2] <- sum(counts2[s,(nratings+1):(nratings*2)])
+        CR[s,2] <- sum(counts2[s,1:(nratings)])
+
+        # Type 1 counts for task 3
+        N[s,3] <- sum(counts3[s,1:(nratings*2)])
+        S[s,3] <- sum(counts3[s,(nratings*2+1):(nratings*4)])
+        H[s,3] <- sum(counts3[s,(nratings*3+1):(nratings*4)])
+        M[s,3] <- sum(counts3[s,(nratings*2+1):(nratings*3)])
+        FA[s,3] <- sum(counts3[s,(nratings+1):(nratings*2)])
+        CR[s,3] <- sum(counts3[s,1:(nratings)])
+
+        # Type 1 counts for task 4
+        N[s,4] <- sum(counts4[s,1:(nratings*2)])
+        S[s,4] <- sum(counts4[s,(nratings*2+1):(nratings*4)])
+        H[s,4] <- sum(counts4[s,(nratings*3+1):(nratings*4)])
+        M[s,4] <- sum(counts4[s,(nratings*2+1):(nratings*3)])
+        FA[s,4] <- sum(counts4[s,(nratings+1):(nratings*2)])
+        CR[s,4] <- sum(counts4[s,1:(nratings)])
+    }
+}
+
+model {
+  for (s in 1:nsubj) {
+
+    ## TYPE 2 SDT MODEL (META-D)
+	# Multinomial likelihood for response counts ordered as c(nR_S1,nR_S2)
+
+    counts1[s,1:(nratings)] ~ dmulti(prT[s,1:(nratings),1],CR[s,1])
+    counts1[s,(nratings+1):(nratings*2)] ~ dmulti(prT[s,(nratings+1):(nratings*2),1],FA[s,1])
+    counts1[s,(nratings*2+1):(nratings*3)] ~ dmulti(prT[s,(nratings*2+1):(nratings*3),1],M[s,1])
+    counts1[s,(nratings*3+1):(nratings*4)] ~ dmulti(prT[s,(nratings*3+1):(nratings*4),1],H[s,1])
+    
+    counts2[s,1:(nratings)] ~ dmulti(prT[s,1:(nratings),2],CR[s,2])
+    counts2[s,(nratings+1):(nratings*2)] ~ dmulti(prT[s,(nratings+1):(nratings*2),2],FA[s,2])
+    counts2[s,(nratings*2+1):(nratings*3)] ~ dmulti(prT[s,(nratings*2+1):(nratings*3),2],M[s,2])
+    counts2[s,(nratings*3+1):(nratings*4)] ~ dmulti(prT[s,(nratings*3+1):(nratings*4),2],H[s,2])
+
+    counts3[s,1:(nratings)] ~ dmulti(prT[s,1:(nratings),3],CR[s,3])
+    counts3[s,(nratings+1):(nratings*2)] ~ dmulti(prT[s,(nratings+1):(nratings*2),3],FA[s,3])
+    counts3[s,(nratings*2+1):(nratings*3)] ~ dmulti(prT[s,(nratings*2+1):(nratings*3),3],M[s,3])
+    counts3[s,(nratings*3+1):(nratings*4)] ~ dmulti(prT[s,(nratings*3+1):(nratings*4),3],H[s,3])
+
+    counts4[s,1:(nratings)] ~ dmulti(prT[s,1:(nratings),4],CR[s,4])
+    counts4[s,(nratings+1):(nratings*2)] ~ dmulti(prT[s,(nratings+1):(nratings*2),4],FA[s,4])
+    counts4[s,(nratings*2+1):(nratings*3)] ~ dmulti(prT[s,(nratings*2+1):(nratings*3),4],M[s,4])
+    counts4[s,(nratings*3+1):(nratings*4)] ~ dmulti(prT[s,(nratings*3+1):(nratings*4),4],H[s,4])
+    
+    for (task in 1:4) {
+    
+		# Means of SDT distributions]
+		mu[s,task] <- Mratio[s,task]*d1[s,task]
+		S2mu[s,task] <- mu[s,task]/2
+		S1mu[s,task] <- -mu[s,task]/2
+
+		# Calculate normalisation constants
+		C_area_rS1[s,task] <- phi(c1[s,task] - S1mu[s,task])
+		I_area_rS1[s,task] <- phi(c1[s,task] - S2mu[s,task])
+		C_area_rS2[s,task] <- 1-phi(c1[s,task] - S2mu[s,task])
+		I_area_rS2[s,task] <- 1-phi(c1[s,task] - S1mu[s,task])
+
+		# Get nC_rS1 probs
+		pr[s,1,task] <- phi(cS1[s,1,task] - S1mu[s,task])/C_area_rS1[s,task]  
+		for (k in 1:(nratings-2)) {                
+			pr[s,(k+1),task] <- (phi(cS1[s,(k+1),task] - S1mu[s,task])-phi(cS1[s,k,task] - S1mu[s,task]))/C_area_rS1[s,task]
+		}
+		pr[s,(nratings),task] <- (phi(c1[s,task] - S1mu[s,task])-phi(cS1[s,(nratings-1),task] - S1mu[s,task]))/C_area_rS1[s,task]   
+
+		# Get nI_rS2 probs
+		pr[s,(nratings+1),task] <- ((1-phi(c1[s,task] - S1mu[s,task]))-(1-phi(cS2[s,1,task] - S1mu[s,task])))/I_area_rS2[s,task]
+		for (k in 1:(nratings-2)) {                
+			pr[s,(nratings+1+k),task] <- ((1-phi(cS2[s,k,task] - S1mu[s,task]))-(1-phi(cS2[s,(k+1),task] - S1mu[s,task])))/I_area_rS2[s,task]
+		}
+		pr[s,(nratings*2),task] <- (1-phi(cS2[s,(nratings-1),task] - S1mu[s,task]))/I_area_rS2[s,task]
+
+		# Get nI_rS1 probs
+		pr[s,(nratings*2+1), task] <- phi(cS1[s,1,task] - S2mu[s,task])/I_area_rS1[s,task]
+		for (k in 1:(nratings-2)) {
+			pr[s,(nratings*2+1+k),task] <- (phi(cS1[s,(k+1),task] - S2mu[s,task])-phi(cS1[s,k,task] - S2mu[s,task]))/I_area_rS1[s,task]
+		}
+		pr[s,(nratings*3),task] <- (phi(c1[s,task] - S2mu[s,task])-phi(cS1[s,(nratings-1),task] - S2mu[s,task]))/I_area_rS1[s,task]
+
+		# Get nC_rS2 probs
+		pr[s,(nratings*3+1),task] <- ((1-phi(c1[s,task] - S2mu[s,task]))-(1-phi(cS2[s,1,task] - S2mu[s,task])))/C_area_rS2[s,task]
+		for (k in 1:(nratings-2)) {                
+			pr[s,(nratings*3+1+k),task] <- ((1-phi(cS2[s,k,task] - S2mu[s,task]))-(1-phi(cS2[s,(k+1),task] - S2mu[s,task])))/C_area_rS2[s,task]
+		}
+		pr[s,(nratings*4),task] <- (1-phi(cS2[s,(nratings-1),task] - S2mu[s,task]))/C_area_rS2[s,task]
+
+		# Avoid underflow of probabilities
+		for (i in 1:(nratings*4)) {
+			prT[s,i,task] <- ifelse(pr[s,i,task] < Tol, Tol, pr[s,i,task])
+		}
+
+		# Specify ordered prior on criteria (bounded above and below by Type 1 c) 
+		for (j in 1:(nratings-1)) {
+			cS1_raw[s,j,task] ~ dnorm(-mu_c2[task], lambda_c2[task])
+			cS2_raw[s,j,task] ~ dnorm(mu_c2[task], lambda_c2[task])
+		}
+		cS1[s,1:(nratings-1),task] <- sort(cS1_raw[s,1:(nratings-1),task])
+		cS2[s,1:(nratings-1),task] <- sort(cS2_raw[s,1:(nratings-1),task])
+	
+		Mratio[s,task] <- exp(logMratio[s,task])
+    
+    	} 
+    	
+    	# Draw log(M)'s from bivariate Gaussian
+    	logMratio[s,1:4] ~ dmnorm.vcov(mu_logMratio[], T[,])
+    	
+	}
+	
+	mu_c2[1] ~ dnorm(0, 0.01)
+	mu_c2[2] ~ dnorm(0, 0.01)
+	mu_c2[3] ~ dnorm(0, 0.01)
+	mu_c2[4] ~ dnorm(0, 0.01)
+	sigma_c2[1] ~ dnorm(0, 0.01) I(0, )
+	sigma_c2[2] ~ dnorm(0, 0.01) I(0, )
+	sigma_c2[3] ~ dnorm(0, 0.01) I(0, )
+	sigma_c2[4] ~ dnorm(0, 0.01) I(0, )
+	lambda_c2[1] <- pow(sigma_c2[1], -2)
+	lambda_c2[2] <- pow(sigma_c2[2], -2)
+	lambda_c2[3] <- pow(sigma_c2[3], -2)
+	lambda_c2[4] <- pow(sigma_c2[4], -2)
+
+	
+    mu_logMratio[1] ~ dnorm(0, 1)
+    mu_logMratio[2] ~ dnorm(0, 1)
+    mu_logMratio[3] ~ dnorm(0, 1)
+    mu_logMratio[4] ~ dnorm(0, 1)
+    lambda_logMratio[1] ~ dgamma(0.001,0.001)
+    lambda_logMratio[2] ~ dgamma(0.001,0.001)
+    lambda_logMratio[3] ~ dgamma(0.001,0.001)
+    lambda_logMratio[4] ~ dgamma(0.001,0.001)
+    sigma_logMratio[1] <- 1/sqrt(lambda_logMratio[1])
+    sigma_logMratio[2] <- 1/sqrt(lambda_logMratio[2])
+    sigma_logMratio[3] <- 1/sqrt(lambda_logMratio[3])
+    sigma_logMratio[4] <- 1/sqrt(lambda_logMratio[4])
+
+    rho[1] ~ dunif(-1,1)
+    rho[2] ~ dunif(-1,1)
+    rho[3] ~ dunif(-1,1)
+    rho[4] ~ dunif(-1,1)
+    rho[5] ~ dunif(-1,1)
+    rho[6] ~ dunif(-1,1)
+    
+    T[1,1] <- 1/lambda_logMratio[1]
+    T[1,2] <- rho[1]*sigma_logMratio[1]*sigma_logMratio[2]
+    T[1,3] <- rho[2]*sigma_logMratio[1]*sigma_logMratio[3]
+    T[1,4] <- rho[3]*sigma_logMratio[1]*sigma_logMratio[4]
+    T[2,1] <- rho[1]*sigma_logMratio[1]*sigma_logMratio[2]
+    T[2,2] <- 1/lambda_logMratio[2]
+    T[2,3] <- rho[4]*sigma_logMratio[2]*sigma_logMratio[3]
+    T[2,4] <- rho[5]*sigma_logMratio[2]*sigma_logMratio[4]
+    T[3,1] <- rho[2]*sigma_logMratio[1]*sigma_logMratio[3]
+    T[3,2] <- rho[4]*sigma_logMratio[2]*sigma_logMratio[3]
+    T[3,3] <- 1/lambda_logMratio[3]
+    T[3,4] <- rho[6]*sigma_logMratio[3]*sigma_logMratio[4]
+    T[4,1] <- rho[3]*sigma_logMratio[1]*sigma_logMratio[4]
+    T[4,2] <- rho[5]*sigma_logMratio[2]*sigma_logMratio[4]
+    T[4,3] <- rho[6]*sigma_logMratio[3]*sigma_logMratio[4]
+    T[4,4] <- 1/lambda_logMratio[4]
+
+
+}
