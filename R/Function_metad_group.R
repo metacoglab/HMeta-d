@@ -101,7 +101,7 @@ metad_group <- function (nR_S1, nR_S2) {
     # Sampling
     output <- coda.samples( 
       model          = model,
-      variable.names = c("mu_logMratio", "sigma_logMratio", "Mratio", "mu_c2", "mu_d1"),
+      variable.names = c("mu_logMratio", "sigma_logMratio", "Mratio", "mu_c2"),
       n.iter         = 10000,
       thin           = 1 )
     
