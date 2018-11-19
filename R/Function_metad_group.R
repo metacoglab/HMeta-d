@@ -73,12 +73,15 @@ metad_group <- function (nR_S1, nR_S2) {
         rbind(a)
     }
 
-  d1 <<- c(d1[1:nsubj,1])
-  c1 <<- c(c1[1:nsubj,1])
+  d1 <- c(d1[1:nsubj,1])
+  c1 <- c(c1[1:nsubj,1])
     
   # Data preparation for model
   counts <- t(nR_S1[[1]]) %>% 
     cbind(t(nR_S2[[1]]))
+  
+  d1 <<- as.matrix(d1)
+  c1 <<- as.matrix(c1)
 
     Tol <- 1e-05
     

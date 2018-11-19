@@ -85,10 +85,10 @@ metad_groupcorr <- function (nR_S1, nR_S2) {
     ct1 <- c(c1[1:nsubj,1])
     ct2 <- c(c1[(nsubj+1):(nsubj*2),1])
     
-    d1 <<- data.frame(T1 = dt1,
+    d1 <- data.frame(T1 = dt1,
                      T2 = dt2)
     
-    c1 <<- data.frame(T1 = ct1,
+    c1 <- data.frame(T1 = ct1,
                      T2 = ct2)
     
     # Data preparation for model
@@ -99,8 +99,8 @@ metad_groupcorr <- function (nR_S1, nR_S2) {
 
     Tol <- 1e-05
     
-    d1 <- as.matrix(d1)
-    c1 <- as.matrix(c1)
+    d1 <<- as.matrix(d1)
+    c1 <<- as.matrix(c1)
     
     data <- list(
       d1 = d1,
@@ -169,11 +169,11 @@ metad_groupcorr <- function (nR_S1, nR_S2) {
       ct2 <- c(c1[(nsubj+1):(nsubj*2),1])
       ct3 <- c(c1[(nsubj*2+1):(nsubj*3),1])
       
-      d1 <<- data.frame(T1 = dt1,
+      d1 <- data.frame(T1 = dt1,
                        T2 = dt2,
                        T3 = dt3)
       
-      c1 <<- data.frame(T1 = ct1,
+      c1 <- data.frame(T1 = ct1,
                        T2 = ct2,
                        T3 = ct3)
       
@@ -187,8 +187,8 @@ metad_groupcorr <- function (nR_S1, nR_S2) {
 
       Tol <- 1e-05
       
-      d1 <- as.matrix(d1)
-      c1 <- as.matrix(c1)
+      d1 <<- as.matrix(d1)
+      c1 <<- as.matrix(c1)
       
       data <- list(
         d1 = d1,
@@ -260,12 +260,12 @@ metad_groupcorr <- function (nR_S1, nR_S2) {
     ct3 <- c(c1[(nsubj*2+1):(nsubj*3),1])
     ct4 <- c(c1[(nsubj*3+1):(nsubj*4),1])
     
-    d1 <<- data.frame(T1 = dt1,
+    d1 <- data.frame(T1 = dt1,
                      T2 = dt2,
                      T3 = dt3,
                      T4 = dt4)
     
-    c1 <<- data.frame(T1 = ct1,
+    c1 <- data.frame(T1 = ct1,
                      T2 = ct2,
                      T3 = ct3,
                      T4 = ct4)
@@ -282,8 +282,8 @@ metad_groupcorr <- function (nR_S1, nR_S2) {
     
     Tol <- 1e-05
     
-    d1 <- as.matrix(d1)
-    c1 <- as.matrix(c1)
+    d1 <<- as.matrix(d1)
+    c1 <<- as.matrix(c1)
     
     data <- list(
       d1 = d1,
