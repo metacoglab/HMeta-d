@@ -119,7 +119,7 @@ function fit = fit_meta_d_mcmc_group(nR_S1, nR_S2, mcmc_params, fncdf, fninv)
 % alarm rates. If meta-d' is fit using the response-conditional model,
 % these parameters will be replicated separately for S1 and S2 responses.
 %
-% 6/5/2014 Steve Fleming www.stevefleming.org
+% 6/5/2014 Steve Fleming https://metacoglab.org
 % Parts of this code are adapted from Brian Maniscalco's meta-d' toolbox
 % which can be found at http://www.columbia.edu/~bsm2105/type2sdt/
 

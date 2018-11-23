@@ -86,6 +86,8 @@ metad_group <- function (nR_S1, nR_S2) {
     Tol <- 1e-05
     
     data <- list(
+      d1 = d1,
+      c1 = c1,
       nsubj = nsubj,
       counts = counts,
       nratings = nratings,
