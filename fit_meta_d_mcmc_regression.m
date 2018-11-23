@@ -69,7 +69,7 @@ datastruct = struct('d1', d1, 'c1', c1,'nsubj',Nsubj,'counts', counts,'cov', cov
 % Select model file and parameters to monitor
 
 model_file = 'Bayes_metad_group_regress_nodp.txt';
-monitorparams = {'d1', 'c1', 'mu_logMratio','sigma_logMratio','mu_c2','sigma_c2','mu_beta1', 'sigma_beta1', 'Mratio', 'cS1','cS2', 'lambda_logMratio'};
+monitorparams = {'d1', 'c1', 'mu_logMratio','sigma_logMratio','mu_c2','sigma_c2','mu_beta1', 'sigma_beta1', 'Mratio', 'cS1','cS2'};
 
 % Use JAGS to Sample
 tic
