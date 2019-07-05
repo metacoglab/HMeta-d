@@ -91,11 +91,11 @@ model {
     mu_logMratio ~ dnorm(0, 1)
     sigma_logMratio ~ dnorm(0, 0.01) I(0, )
     lambda_logMratio <- pow(sigma_logMratio, -2)
-	mu_beta1 ~ dnorm(0, 0.001)
-	sigma_beta1 ~ dnorm(0, 0.01) I(0, )
-	lambda_beta1 <- pow(sigma_beta1, -2)
-	# mu_beta2 ~ dnorm(0, 0.001)
-	# sigma_beta2 ~ dnorm(0, 0.01) I(0, )
+    mu_beta1 ~ dnorm(0, 1)
+    sigma_beta1 ~ dnorm(0, 0.1) I(0, )
+    lambda_beta1 <- pow(sigma_beta1, -2)
+	# mu_beta2 ~ dnorm(0, 1)
+	# sigma_beta2 ~ dnorm(0, 0.1) I(0, )
 	# lambda_beta2 <- pow(sigma_beta2, -2)
 	
 }
