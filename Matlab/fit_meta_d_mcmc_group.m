@@ -126,7 +126,7 @@ function fit = fit_meta_d_mcmc_group(nR_S1, nR_S2, mcmc_params, fncdf, fninv)
 fprintf('\n')
 disp('----------------------------------------')
 disp('Hierarchical meta-d'' model')
-disp('https://github.com/smfleming/HMM')
+disp('https://github.com/smfleming/HMeta-d')
 disp('----------------------------------------')
 fprintf('\n')
 
