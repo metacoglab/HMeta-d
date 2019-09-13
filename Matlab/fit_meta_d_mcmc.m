@@ -120,7 +120,7 @@ cwd = pwd;
 fprintf('\n')
 disp('----------------------------------------')
 disp('Hierarchical meta-d'' model')
-disp('https://github.com/smfleming/HMM')
+disp('https://github.com/smfleming/HMeta-d')
 disp('----------------------------------------')
 fprintf('\n')
 

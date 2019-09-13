@@ -7,6 +7,13 @@ function fit = fit_meta_d_mcmc_regression(nR_S1, nR_S2, cov, mcmc_params, fncdf,
 % Steve Fleming 2017
 
 cwd = pwd;
+findpath = which('Bayes_metad_group.txt');
+if isempty(findpath)
+    error('Please add HMetaD directory to the path')
+else
+    hmmPath = fileparts(findpath);
+    cd(hmmPath)
+end
 
 if ~exist('fncdf','var') || isempty(fncdf)
     fncdf = @normcdf;
