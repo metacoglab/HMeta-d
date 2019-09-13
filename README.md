@@ -6,7 +6,11 @@ HMeta-d
 Steve Fleming
 stephen.fleming@ucl.ac.uk 
 
-This MATLAB toolbox implements the meta-d’ model (Maniscalco & Lau, 2012) in a hierarchical Bayesian framework using Matlab and JAGS, a program for conducting MCMC inference on arbitrary Bayesian models. A paper with more details on the method and the advantages of estimating meta-d’ in a hierarchal Bayesian framework is available here https://academic.oup.com/nc/article/doi/10.1093/nc/nix007/3748261/HMeta-d-hierarchical-Bayesian-estimation-of. For a more general introduction to Bayesian models of cognition see Lee & Wagenmakers, Bayesian Cognitive Modeling: A Practical Course http://bayesmodels.com/
+This MATLAB toolbox implements the meta-d’ model (Maniscalco & Lau, 2012) in a hierarchical Bayesian framework using Matlab and JAGS, a program for conducting MCMC inference on arbitrary Bayesian models. A paper with more details on the method and the advantages of estimating meta-d’ in a hierarchal Bayesian framework is available here https://academic.oup.com/nc/article/doi/10.1093/nc/nix007/3748261/HMeta-d-hierarchical-Bayesian-estimation-of.
+
+For a more general introduction to Bayesian models of cognition see Lee & Wagenmakers, Bayesian Cognitive Modeling: A Practical Course http://bayesmodels.com/
+
+The model builds on work by Michael Lee on Bayesian estimation of Type 1 SDT parameters: https://link.springer.com/article/10.3758/BRM.40.2.450 
 
 The code is designed to work “out of the box” without much coding on the part of the user, and it receives data in the same format as Maniscalco & Lau’s toolbox, allowing easy switching and comparison between the two.
 
@@ -14,9 +18,11 @@ The code is designed to work “out of the box” without much coding on the par
 
 http://mcmc-jags.sourceforge.net/
 
-**Note that there are re compatibility issues between matjags and JAGS 4.X** To run the MATLAB code you will need to install JAGS 3.4.0 rather than the latest version. The model files work fine with JAGS 4.X when called from R with rjags.
+**Note that there are re compatibility issues between matjags and JAGS 4.X To run the MATLAB code you will need to install JAGS 3.4.0 rather than the latest version.** The model files work fine with JAGS 4.X when called from R with rjags.
 
-2) The main functions are fit_meta_d_mcmc (for fitting individual subject data) and fit_meta_d_mcmc_group (for hierarchical fits of group data). More information is contained in the help of these two functions and in the wiki https://github.com/smfleming/HMM/wiki/HMeta-d-tutorial. To get started try running exampleFit or exampleFit_group.
+2) The main functions are fit_meta_d_mcmc (for fitting individual subject data) and fit_meta_d_mcmc_group (for hierarchical fits of group data). More information is contained in the help of these two functions and in the wiki https://github.com/smfleming/HMM/wiki/HMeta-d-tutorial. To get started try running exampleFit or exampleFit_group. 
+
+A walkthrough of the model and intuitions behind different usages can be found in Olivia Faull's step-by-step tutorial developed for the Zurich Computational Psychiatry course: 
 
 Please get in touch with your experiences with using the toolbox, and any bug reports or issues to me at stephen.fleming@ucl.ac.uk 
 
