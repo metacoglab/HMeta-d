@@ -22,7 +22,7 @@ http://mcmc-jags.sourceforge.net/
 
 2) The main functions are fit_meta_d_mcmc (for fitting individual subject data) and fit_meta_d_mcmc_group (for hierarchical fits of group data). More information is contained in the help of these two functions and in the wiki https://github.com/smfleming/HMM/wiki/HMeta-d-tutorial. To get started try running exampleFit or exampleFit_group. 
 
-A walkthrough of the model and intuitions behind different usages can be found in Olivia Faull's step-by-step tutorial developed for the Zurich Computational Psychiatry course: 
+A walkthrough of the model and intuitions behind different usages can be found in Olivia Faull's step-by-step tutorial developed for the Zurich Computational Psychiatry course: https://github.com/metacoglab/HMeta-d/blob/master/CPC_metacog_tutorial/cpc_metacog_tutorial.m
 
 Please get in touch with your experiences with using the toolbox, and any bug reports or issues to me at stephen.fleming@ucl.ac.uk 
 
