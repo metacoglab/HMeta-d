@@ -8,14 +8,14 @@
 function auroc2 = cpc_type2roc(nR_S1, nR_S2, Nratings)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
  
-temp_FA1 = fliplr(nR_S1);
-temp_FA2 = fliplr(nR_S2);
+flipped_nR_S1 = fliplr(nR_S1);
+flipped_nR_S2 = fliplr(nR_S2);
 
 for c = 1:Nratings
     S1_H2(c) = nR_S1(c) + 0.5;
-    S2_H2(c) = nR_S2(c) + 0.5;
-    S1_FA2(c) = temp_FA1(c) + 0.5;
-    S2_FA2(c) = temp_FA2(c) + 0.5;
+    S2_H2(c) = flipped_nR_S2(c) + 0.5;
+    S1_FA2(c) = flipped_nR_S1(c) + 0.5;
+    S2_FA2(c) = nR_S2(c) + 0.5;
 end
 
 H2 = S1_H2 + S2_H2;
