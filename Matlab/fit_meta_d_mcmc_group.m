@@ -253,7 +253,9 @@ fit.t2ca_rS1  = stats.mean.cS1;
 fit.t2ca_rS2  = stats.mean.cS2;
 fit.d1 = stats.mean.d1;
 fit.c1 = stats.mean.c1;
-
+fit.mu_c2 = stats.mean.mu_c2;
+fit.sigma_c2 = stats.mean.sigma_c2;
+    
 if ~mcmc_params.response_conditional
     
     fit.mu_logMratio = stats.mean.mu_logMratio;

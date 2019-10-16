@@ -14,7 +14,7 @@ data {
 
 model {
   for (s in 1:nsubj) {
-  	
+
     ## TYPE 2 SDT MODEL (META-D)
 	# Multinomial likelihood for response counts ordered as c(nR_S1,nR_S2)
     counts[s,1:nratings] ~ dmulti(prT[s,1:nratings],CR[s])
@@ -29,7 +29,7 @@ model {
 	S1mu_rS1[s] <- -mu_rS1[s]/2
 	S2mu_rS2[s] <- mu_rS2[s]/2
 	S1mu_rS2[s] <- -mu_rS2[s]/2
-	
+
 	# Calculate normalisation constants
 	C_area_rS1[s] <- phi(c1[s] - S1mu_rS1[s])
 	I_area_rS1[s] <- phi(c1[s] - S2mu_rS1[s])
@@ -37,15 +37,15 @@ model {
 	I_area_rS2[s] <- 1-phi(c1[s] - S1mu_rS2[s])
 
 	# Get nC_rS1 probs
-	pr[s,1] <- phi(cS1[s,1] - S1mu_rS1[s])/C_area_rS1[s]  
-	for (k in 1:nratings-2) {                
+	pr[s,1] <- phi(cS1[s,1] - S1mu_rS1[s])/C_area_rS1[s]
+	for (k in 1:nratings-2) {
   		pr[s,k+1] <- (phi(cS1[s,k+1] - S1mu_rS1[s])-phi(cS1[s,k] - S1mu_rS1[s]))/C_area_rS1[s]
 	}
-	pr[s,nratings] <- (phi(c1[s] - S1mu_rS1[s])-phi(cS1[s,nratings-1] - S1mu_rS1[s]))/C_area_rS1[s]   
+	pr[s,nratings] <- (phi(c1[s] - S1mu_rS1[s])-phi(cS1[s,nratings-1] - S1mu_rS1[s]))/C_area_rS1[s]
 
 	# Get nI_rS2 probs
 	pr[s,nratings+1] <- ((1-phi(c1[s] - S1mu_rS2[s]))-(1-phi(cS2[s,1] - S1mu_rS2[s])))/I_area_rS2[s]
-	for (k in 1:nratings-2) {                
+	for (k in 1:nratings-2) {
   		pr[s,nratings+1+k] <- ((1-phi(cS2[s,k] - S1mu_rS2[s]))-(1-phi(cS2[s,k+1] - S1mu_rS2[s])))/I_area_rS2[s]
 	}
 	pr[s,nratings*2] <- (1-phi(cS2[s,nratings-1] - S1mu_rS2[s]))/I_area_rS2[s]
@@ -59,7 +59,7 @@ model {
 
 	# Get nC_rS2 probs
 	pr[s,(nratings*3)+1] <- ((1-phi(c1[s] - S2mu_rS2[s]))-(1-phi(cS2[s,1] - S2mu_rS2[s])))/C_area_rS2[s]
-	for (k in 1:nratings-2) {                
+	for (k in 1:nratings-2) {
   		pr[s,(nratings*3)+1+k] <- ((1-phi(cS2[s,k] - S2mu_rS2[s]))-(1-phi(cS2[s,k+1] - S2mu_rS2[s])))/C_area_rS2[s]
 	}
 	pr[s,nratings*4] <- (1-phi(cS2[s,nratings-1] - S2mu_rS2[s]))/C_area_rS2[s]
@@ -69,10 +69,10 @@ model {
   		prT[s,i] <- ifelse(pr[s,i] < Tol, Tol, pr[s,i])
 	}
 
-	# Specify ordered prior on criteria (bounded above and below by Type 1 c) 
+	# Specify ordered prior on criteria (bounded above and below by Type 1 c)
 	for (j in 1:nratings-1) {
-        cS1_raw[s,j] ~ dnorm(-mu_c2, lambda_c2)
-        cS2_raw[s,j] ~ dnorm(mu_c2, lambda_c2)
+        cS1_raw[s,j] ~ dnorm(-mu_c2, lambda_c2) T(,c1[s])
+        cS2_raw[s,j] ~ dnorm(mu_c2, lambda_c2) T(c1[s],)
 	}
 	cS1[s,1:nratings-1] <- sort(cS1_raw[s, ])
 	cS2[s,1:nratings-1] <- sort(cS2_raw[s, ])
@@ -83,9 +83,9 @@ model {
     delta_rS2[s] ~ dnorm(0, lambda_delta_rS2)
     logMratio_rS2[s] <- mu_logMratio_rS2 + epsilon_logMratio_rS2*delta_rS2[s]
     Mratio_rS2[s] <- exp(logMratio_rS2[s])
-	
+
 	}
-	
+
   	# hyperpriors
 	mu_c2 ~ dnorm(0, 0.01)
 	sigma_c2 ~ dnorm(0, 0.01) I(0, )

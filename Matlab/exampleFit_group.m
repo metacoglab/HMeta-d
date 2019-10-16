@@ -4,8 +4,8 @@
 
 clear all
 
-Ntrials = 100;
-Nsub = 20;
+Ntrials = 200;
+Nsub = 30;
 c = -0.3;
 c1 = [-1.5 -1 -0.5];
 c2 = [0.5 1 1.5];
