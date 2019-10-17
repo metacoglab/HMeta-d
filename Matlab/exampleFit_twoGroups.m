@@ -1,4 +1,4 @@
-% Demonstration of comparison between two groups
+% Demonstration of comparison between two independent groups
 %
 % SF 2014
 

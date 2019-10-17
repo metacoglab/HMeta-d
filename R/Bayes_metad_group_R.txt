@@ -45,15 +45,15 @@ model {
 	I_area_rS2[s] <- 1-phi(c1[s] - S1mu[s])
 
 	# Get nC_rS1 probs
-	pr[s,1] <- phi(cS1[s,1] - S1mu[s])/C_area_rS1[s]  
-	for (k in 1:(nratings-2)) {                
+	pr[s,1] <- phi(cS1[s,1] - S1mu[s])/C_area_rS1[s]
+	for (k in 1:(nratings-2)) {
   		pr[s,k+1] <- (phi(cS1[s,(k+1)] - S1mu[s])-phi(cS1[s,k] - S1mu[s]))/C_area_rS1[s]
 	}
-	pr[s,nratings] <- (phi(c1[s] - S1mu[s])-phi(cS1[s,(nratings-1)] - S1mu[s]))/C_area_rS1[s]   
+	pr[s,nratings] <- (phi(c1[s] - S1mu[s])-phi(cS1[s,(nratings-1)] - S1mu[s]))/C_area_rS1[s]
 
 	# Get nI_rS2 probs
 	pr[s,(nratings+1)] <- ((1-phi(c1[s] - S1mu[s]))-(1-phi(cS2[s,1] - S1mu[s])))/I_area_rS2[s]
-	for (k in 1:(nratings-2)) {                
+	for (k in 1:(nratings-2)) {
   		pr[s,(nratings+1+k)] <- ((1-phi(cS2[s,k] - S1mu[s]))-(1-phi(cS2[s,(k+1)] - S1mu[s])))/I_area_rS2[s]
 	}
 	pr[s,(nratings*2)] <- (1-phi(cS2[s,(nratings-1)] - S1mu[s]))/I_area_rS2[s]
@@ -67,7 +67,7 @@ model {
 
 	# Get nC_rS2 probs
 	pr[s,(nratings*3+1)] <- ((1-phi(c1[s] - S2mu[s]))-(1-phi(cS2[s,1] - S2mu[s])))/C_area_rS2[s]
-	for (k in 1:(nratings-2)) {                
+	for (k in 1:(nratings-2)) {
   		pr[s,(nratings*3+1+k)] <- ((1-phi(cS2[s,k] - S2mu[s]))-(1-phi(cS2[s,(k+1)] - S2mu[s])))/C_area_rS2[s]
 	}
 	pr[s,(nratings*4)] <- (1-phi(cS2[s,(nratings-1)] - S2mu[s]))/C_area_rS2[s]
@@ -77,19 +77,19 @@ model {
   		prT[s,i] <- ifelse(pr[s,i] < Tol, Tol, pr[s,i])
 	}
 
-	# Specify ordered prior on criteria (bounded above and below by Type 1 c) 
+	# Specify ordered prior on criteria (bounded above and below by Type 1 c)
 	for (j in 1:(nratings-1)) {
-        	cS1_raw[s,j] ~ dnorm(-mu_c2, lambda_c2)
-        	cS2_raw[s,j] ~ dnorm(mu_c2, lambda_c2)
+        	cS1_raw[s,j] ~ dnorm(-mu_c2, lambda_c2) T(,c1[s])
+        	cS2_raw[s,j] ~ dnorm(mu_c2, lambda_c2) T(c1[s],)
 	}
 	cS1[s,1:(nratings-1)] <- sort(cS1_raw[s, ])
 	cS2[s,1:(nratings-1)] <- sort(cS2_raw[s, ])
-    
+
     delta[s] ~ dnorm(0, lambda_delta)
     logMratio[s] <- mu_logMratio + epsilon_logMratio*delta[s]
     Mratio[s] <- exp(logMratio[s])
 	}
-	
+
   	# hyperpriors
     mu_d1 ~ dnorm(0, 0.01)
     mu_c ~ dnorm(0, 0.01)
@@ -101,11 +101,11 @@ model {
 	mu_c2 ~ dnorm(0, 0.01)
 	sigma_c2 ~ dnorm(0, 0.01) I(0, )
 	lambda_c2 <- pow(sigma_c2, -2)
-	
+
     mu_logMratio ~ dnorm(0, 1)
     sigma_delta ~ dnorm(0, 1) I(0,)
     lambda_delta <- pow(sigma_delta, -2)
     epsilon_logMratio ~ dbeta(1,1)
     sigma_logMratio <- abs(epsilon_logMratio)*sigma_delta
-  
+
 }
