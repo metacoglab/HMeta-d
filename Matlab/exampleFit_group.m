@@ -38,3 +38,5 @@ fit = fit_meta_d_mcmc_group(nR_S1, nR_S2, mcmc_params);
 plotSamples(exp(fit.mcmc.samples.mu_logMratio))
 hdi = calc_HDI(exp(fit.mcmc.samples.mu_logMratio(:)));
 fprintf(['\n HDI on meta-d/d: ', num2str(hdi) '\n\n'])
+
+metad_visualise_group
