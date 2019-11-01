@@ -1,0 +1,111 @@
+# Bayesian estimation of meta-d/d for group
+
+data {
+    for (s in 1:nsubj) {
+        # Type 1 counts
+        N[s] <- sum(counts[s,1:nratings*2])
+        S[s] <- sum(counts[s,(nratings*2)+1:nratings*4])
+        H[s] <- sum(counts[s,(nratings*3)+1:nratings*4])
+        M[s] <- sum(counts[s,(nratings*2)+1:nratings*3])
+        FA[s] <- sum(counts[s,nratings+1:nratings*2])
+        CR[s] <- sum(counts[s,1:nratings])
+    }
+}
+
+model {
+  for (s in 1:nsubj) {
+
+    ## TYPE 2 SDT MODEL (META-D)
+	# Multinomial likelihood for response counts ordered as c(nR_S1,nR_S2)
+    counts[s,1:nratings] ~ dmulti(prT[s,1:nratings],CR[s])
+    counts[s,nratings+1:nratings*2] ~ dmulti(prT[s,nratings+1:nratings*2],FA[s])
+    counts[s,(nratings*2)+1:nratings*3] ~ dmulti(prT[s,(nratings*2)+1:nratings*3],M[s])
+    counts[s,(nratings*3)+1:nratings*4] ~ dmulti(prT[s,(nratings*3)+1:nratings*4],H[s])
+
+	# Means of SDT distributions]
+	mu[s] <- Mratio[s]*d1[s]
+	S2mu[s] <- mu[s]/2
+	S1mu[s] <- -mu[s]/2
+
+	# Calculate normalisation constants
+	C_area_rS1[s] <- phi(c1[s] - S1mu[s])
+	I_area_rS1[s] <- phi(c1[s] - S2mu[s])
+	C_area_rS2[s] <- 1-phi(c1[s] - S2mu[s])
+	I_area_rS2[s] <- 1-phi(c1[s] - S1mu[s])
+
+	# Get nC_rS1 probs
+	pr[s,1] <- phi(cS1[s,1] - S1mu[s])/C_area_rS1[s]  
+	for (k in 1:nratings-2) {                
+  		pr[s,k+1] <- (phi(cS1[s,k+1] - S1mu[s])-phi(cS1[s,k] - S1mu[s]))/C_area_rS1[s]
+	}
+	pr[s,nratings] <- (phi(c1[s] - S1mu[s])-phi(cS1[s,nratings-1] - S1mu[s]))/C_area_rS1[s]   
+
+	# Get nI_rS2 probs
+	pr[s,nratings+1] <- ((1-phi(c1[s] - S1mu[s]))-(1-phi(cS2[s,1] - S1mu[s])))/I_area_rS2[s]
+	for (k in 1:nratings-2) {                
+  		pr[s,nratings+1+k] <- ((1-phi(cS2[s,k] - S1mu[s]))-(1-phi(cS2[s,k+1] - S1mu[s])))/I_area_rS2[s]
+	}
+	pr[s,nratings*2] <- (1-phi(cS2[s,nratings-1] - S1mu[s]))/I_area_rS2[s]
+
+	# Get nI_rS1 probs
+	pr[s,(nratings*2)+1] <- phi(cS1[s,1] - S2mu[s])/I_area_rS1[s]
+	for (k in 1:nratings-2) {
+  		pr[s,(nratings*2)+1+k] <- (phi(cS1[s,k+1] - S2mu[s])-phi(cS1[s,k] - S2mu[s]))/I_area_rS1[s]
+	}
+	pr[s,nratings*3] <- (phi(c1[s] - S2mu[s])-phi(cS1[s,nratings-1] - S2mu[s]))/I_area_rS1[s]
+
+	# Get nC_rS2 probs
+	pr[s,(nratings*3)+1] <- ((1-phi(c1[s] - S2mu[s]))-(1-phi(cS2[s,1] - S2mu[s])))/C_area_rS2[s]
+	for (k in 1:nratings-2) {                
+  		pr[s,(nratings*3)+1+k] <- ((1-phi(cS2[s,k] - S2mu[s]))-(1-phi(cS2[s,k+1] - S2mu[s])))/C_area_rS2[s]
+	}
+	pr[s,nratings*4] <- (1-phi(cS2[s,nratings-1] - S2mu[s]))/C_area_rS2[s]
+
+	# Avoid underflow of probabilities
+	for (i in 1:nratings*4) {
+  		prT[s,i] <- ifelse(pr[s,i] < Tol, Tol, pr[s,i])
+	}
+
+	# Specify ordered prior on criteria (bounded above and below by Type 1 c)
+	for (j in 1:(nratings-1)) {
+        cS1_raw[s,j] ~ dnorm(-mu_c2, lambda_c2) T(,c1[s])
+        cS2_raw[s,j] ~ dnorm(mu_c2, lambda_c2) T(c1[s],)
+	}
+	cS1[s,1:nratings-1] <- sort(cS1_raw[s, ])
+	cS2[s,1:nratings-1] <- sort(cS2_raw[s, ])
+    
+    mratio_base[s] ~ dnorm(mu_logMratio, lambda_logMratio)
+    beta1[s] ~ dnorm(mu_beta1, lambda_beta1)
+    beta2[s] ~ dnorm(mu_beta2, lambda_beta2)
+    beta3[s] ~ dnorm(mu_beta3, lambda_beta3)
+    beta4[s] ~ dnorm(mu_beta4, lambda_beta4)
+    # logMratio[s] <- mratio_base[s] + beta1[s]*cov[s]
+    # logMratio[s] <- mratio_base[s] + beta1[s]*cov[1,s] + beta2[s]*cov[2,s]
+    # logMratio[s] <- mratio_base[s] + beta1[s]*cov[1,s] + beta2[s]*cov[2,s] + beta3[s]*cov[3,s]
+    logMratio[s] <- mratio_base[s] + beta1[s]*cov[1,s] + beta2[s]*cov[2,s] + beta3[s]*cov[3,s] + beta4[s]*cov[4,s]
+    Mratio[s] <- exp(logMratio[s])
+
+	}
+	
+  	# hyperpriors
+	mu_c2 ~ dnorm(0, 0.01)
+	sigma_c2 ~ dnorm(0, 0.01) I(0, )
+	lambda_c2 <- pow(sigma_c2, -2)
+	
+    mu_logMratio ~ dnorm(0, 1)
+    sigma_logMratio ~ dnorm(0, 0.01) I(0, )
+    lambda_logMratio <- pow(sigma_logMratio, -2)
+	mu_beta1 ~ dnorm(0, 1)
+	sigma_beta1 ~ dnorm(0, 0.1) I(0, )
+	lambda_beta1 <- pow(sigma_beta1, -2)
+	mu_beta2 ~ dnorm(0, 1)
+	sigma_beta2 ~ dnorm(0, 0.1) I(0, )
+	lambda_beta2 <- pow(sigma_beta2, -2)
+	mu_beta3 ~ dnorm(0, 1)
+	sigma_beta3 ~ dnorm(0, 0.1) I(0, )
+	lambda_beta3 <- pow(sigma_beta3, -2)
+	mu_beta4 ~ dnorm(0, 1)
+	sigma_beta4 ~ dnorm(0, 0.1) I(0, )
+	lambda_beta4 <- pow(sigma_beta4, -2)
+	
+}
