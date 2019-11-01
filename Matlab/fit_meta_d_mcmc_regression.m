@@ -5,9 +5,40 @@ function fit = fit_meta_d_mcmc_regression(nR_S1, nR_S2, cov, mcmc_params, fncdf,
 % See fit_meta_d_mcmc_group for full details
 %
 % Steve Fleming 2017
+%
+% 16.09.2019
+% Ofaull added options to specify models for multiple covariates (up to 5)
+
+fprintf('\n')
+disp('----------------------------------------')
+disp('Hierarchical meta-d'' regression model')
+disp('https://github.com/smfleming/HMeta-d')
+disp('----------------------------------------')
+fprintf('\n')
 
 cwd = pwd;
-findpath = which('Bayes_metad_group.txt');
+
+% Select model file and parameters to monitor
+if size(cov, 1) == 1
+    model_file = 'Bayes_metad_group_regress_nodp.txt';
+    monitorparams = {'d1', 'c1', 'mu_logMratio', 'sigma_logMratio', 'mu_c2', 'sigma_c2', 'mu_beta1', 'sigma_beta1', 'Mratio', 'cS1', 'cS2'};
+elseif size(cov, 1) == 2
+    model_file = 'Bayes_metad_group_regress_nodp_2cov.txt';
+    monitorparams = {'d1', 'c1', 'mu_logMratio', 'sigma_logMratio', 'mu_c2', 'sigma_c2', 'mu_beta1', 'sigma_beta1', 'mu_beta2', 'sigma_beta2', 'Mratio', 'cS1', 'cS2'};
+elseif size(cov, 1) == 3
+    model_file = 'Bayes_metad_group_regress_nodp_3cov.txt';
+    monitorparams = {'d1', 'c1', 'mu_logMratio', 'sigma_logMratio', 'mu_c2', 'sigma_c2', 'mu_beta1', 'sigma_beta1', 'mu_beta2', 'sigma_beta2', 'mu_beta3', 'sigma_beta3', 'Mratio', 'cS1', 'cS2'};
+elseif size(cov, 1) == 4
+    model_file = 'Bayes_metad_group_regress_nodp_4cov.txt';
+    monitorparams = {'d1', 'c1', 'mu_logMratio', 'sigma_logMratio', 'mu_c2', 'sigma_c2', 'mu_beta1', 'sigma_beta1', 'mu_beta2', 'sigma_beta2', 'mu_beta3', 'sigma_beta3', 'mu_beta4', 'sigma_beta4', 'Mratio', 'cS1', 'cS2'};
+elseif size(cov, 1) == 5
+    model_file = 'Bayes_metad_group_regress_nodp_5cov.txt';
+    monitorparams = {'d1', 'c1', 'mu_logMratio', 'sigma_logMratio', 'mu_c2', 'sigma_c2', 'mu_beta1', 'sigma_beta1', 'mu_beta2', 'sigma_beta2', 'mu_beta3', 'sigma_beta3', 'mu_beta4', 'sigma_beta4', 'mu_beta5', 'sigma_beta5', 'Mratio', 'cS1', 'cS2'};
+else
+    error('Too many covariates specified: Max = 5')
+end
+
+findpath = which(model_file);
 if isempty(findpath)
     error('Please add HMetaD directory to the path')
 else
@@ -73,10 +104,6 @@ end
 
 datastruct = struct('d1', d1, 'c1', c1,'nsubj',Nsubj,'counts', counts,'cov', cov, 'nratings', nRatings, 'nTot', nTot, 'Tol', 1e-05);
 
-% Select model file and parameters to monitor
-
-model_file = 'Bayes_metad_group_regress_nodp.txt';
-monitorparams = {'d1', 'c1', 'mu_logMratio','sigma_logMratio','mu_c2','sigma_c2','mu_beta1', 'sigma_beta1', 'Mratio', 'cS1','cS2'};
 
 % Use JAGS to Sample
 tic
@@ -112,6 +139,22 @@ fit.mu_logMratio = stats.mean.mu_logMratio;
 fit.sigma_logMratio = stats.mean.sigma_logMratio;
 fit.mu_beta1 = stats.mean.mu_beta1;
 fit.sigma_beta1 = stats.mean.sigma_beta1;
+if size(cov, 1) > 1
+    fit.mu_beta2 = stats.mean.mu_beta2;
+    fit.sigma_beta2 = stats.mean.sigma_beta2;
+end
+if size(cov, 1) > 2
+    fit.mu_beta3 = stats.mean.mu_beta3;
+    fit.sigma_beta3 = stats.mean.sigma_beta3;
+end
+if size(cov, 1) > 3
+    fit.mu_beta4 = stats.mean.mu_beta4;
+    fit.sigma_beta4 = stats.mean.sigma_beta4;
+end
+if size(cov, 1) > 4
+    fit.mu_beta5 = stats.mean.mu_beta5;
+    fit.sigma_beta5 = stats.mean.sigma_beta5;
+end
 fit.Mratio = stats.mean.Mratio;
 fit.meta_d   = fit.Mratio.*stats.mean.d1;
 
