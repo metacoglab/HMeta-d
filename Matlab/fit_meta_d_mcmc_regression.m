@@ -1,6 +1,6 @@
 function fit = fit_meta_d_mcmc_regression(nR_S1, nR_S2, cov, mcmc_params, fncdf, fninv)
 % HMeta-d for between-subjects regression on meta-d'/d'
-% cov is a s x n matrix of covariates, where s=number of subjects, n=number
+% cov is a n x s matrix of covariates, where s=number of subjects, n=number
 % of covariates 
 % See fit_meta_d_mcmc_group for full details
 %
