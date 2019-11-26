@@ -15,7 +15,7 @@ group_baseline_mratio = 0.8;
 sigma = 0.5;
 sigma_beta = 0.2;
 gen_beta = 0.5;
-cov = rand(Nsub,1);
+cov = rand(Nsub,1)';
 
 mcmc_params = fit_meta_d_params;
 mcmc_params.estimate_dprime = 0;

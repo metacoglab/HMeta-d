@@ -1,4 +1,4 @@
-function fit = fit_meta_d_mcmc_group(nR_S1, nR_S2, mcmc_params, fncdf, fninv)
+function fit = fit_meta_d_mcmc_group(nR_S1, nR_S2, mcmc_params, fncdf, fninv, name)
 % fit = fit_meta_d_mcmc_group(nR_S1, nR_S2, mcmc_params, fncdf, fninv)
 %
 % Given data from an experiment where observers discriminate between two
@@ -82,6 +82,11 @@ function fit = fit_meta_d_mcmc_group(nR_S1, nR_S2, mcmc_params, fncdf, fninv)
 %     mcmc_params.doparallel = 0; % Parallel Option
 %     mcmc_params.dic = 1;  % Save DIC
 %
+% * name
+% optionally specify a name for the temporary samples folder - recommended
+% when running multiple fits at once to avoid interference.
+% if not specified, defaults to tmpjags folder
+%
 % OUTPUT
 %
 % Output is packaged in the struct "fit". All parameter values are taken
@@ -145,6 +150,13 @@ end
 
 if ~exist('fninv','var') || isempty(fninv)
     fninv = @norminv;
+end
+
+if ~exist('name','var') || isempty(name)
+    tmpfolder = 'tmpjags';
+else
+    tmpfolder = name;
+    mkdir(tmpfolder);
 end
 
 Nsubj = length(nR_S1);
@@ -224,25 +236,44 @@ switch mcmc_params.response_conditional
                 monitorparams = {'d1', 'c1', 'mu_logMratio_rS1','mu_logMratio_rS2','sigma_logMratio_rS1','sigma_logMratio_rS2','Mratio_rS1','Mratio_rS2','mu_c2','sigma_c2','mu_d1','sigma_d1','mu_c','sigma_c','cS1','cS2'};
         end
 end
+    
 % Use JAGS to Sample
-tic
-fprintf( 'Running JAGS ...\n' );
-[samples, stats] = matjags( ...
-    datastruct, ...
-    fullfile(pwd, model_file), ...
-    mcmc_params.init0, ...
-    'doparallel' , mcmc_params.doparallel, ...
-    'nchains', mcmc_params.nchains,...
-    'nburnin', mcmc_params.nburnin,...
-    'nsamples', mcmc_params.nsamples, ...
-    'thin', mcmc_params.nthin, ...
-    'dic', mcmc_params.dic,...
-    'monitorparams', monitorparams, ...
-    'savejagsoutput' , 0 , ...
-    'verbosity' , 1 , ...
-    'cleanup' , 1 , ...
-    'workingdir' , 'tmpjags' );
-toc
+try
+    tic
+    fprintf( 'Running JAGS ...\n' );
+    [samples, stats] = matjags( ...
+        datastruct, ...
+        fullfile(pwd, model_file), ...
+        mcmc_params.init0, ...
+        'doparallel' , mcmc_params.doparallel, ...
+        'nchains', mcmc_params.nchains,...
+        'nburnin', mcmc_params.nburnin,...
+        'nsamples', mcmc_params.nsamples, ...
+        'thin', mcmc_params.nthin, ...
+        'dic', mcmc_params.dic,...
+        'monitorparams', monitorparams, ...
+        'savejagsoutput' , 0 , ...
+        'verbosity' , 1 , ...
+        'cleanup' , 1 , ...
+        'workingdir' , tmpfolder );
+    toc
+catch ME
+    % Remove temporary directory if specified
+    if exist('name','var')
+        if exist(['../', tmpfolder],'dir')
+            rmdir(['../', tmpfolder], 's');
+        end
+    end
+    % Print the error message
+    rethrow(ME);
+end
+
+% Remove temporary directory if specified
+if exist('name','var')
+    if exist(tmpfolder,'dir')
+        rmdir(tmpfolder, 's');
+    end
+end
 
 % Package group-level output
 if isrow(stats.mean.cS1)

@@ -56,7 +56,7 @@ plotSamples(fit.mcmc.samples.mu_logMratio(:,:,1))
 plotSamples(fit.mcmc.samples.mu_logMratio(:,:,2))
 
 % Compute HDI of difference between tasks 
-sampleDiff = fit1.mcmc.samples.mu_logMratio(:,:,1) - fit2.mcmc.samples.mu_logMratio(:,:,2);
+sampleDiff = fit.mcmc.samples.mu_logMratio(:,:,1) - fit.mcmc.samples.mu_logMratio(:,:,2);
 hdi = calc_HDI(sampleDiff(:));
 fprintf(['\n HDI on difference in log(meta-d''/d''): ', num2str(hdi) '\n\n'])
 
