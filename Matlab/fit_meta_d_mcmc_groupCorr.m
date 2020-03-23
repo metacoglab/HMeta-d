@@ -100,7 +100,7 @@ datastruct = struct('d1', d1, 'c1', c1, 'nsubj',Nsubj,'counts1', counts{1}, 'cou
 
 % Select model file and parameters to monitor
 model_file = 'Bayes_metad_group_corr.txt';
-monitorparams = {'mu_logMratio', 'sigma_logMratio', 'rho', 'Mratio'};
+monitorparams = {'d1', 'c1', 'mu_logMratio', 'sigma_logMratio', 'rho', 'Mratio'};
 
 % Use JAGS to Sample
 try
@@ -144,6 +144,8 @@ fit.mu_logMratio = stats.mean.mu_logMratio;
 fit.sigma_logMratio = stats.mean.sigma_logMratio;
 fit.rho = stats.mean.rho;
 fit.Mratio = stats.mean.Mratio;
+fit.d1 = stats.mean.d1;
+fit.c1 = stats.mean.c1;
 
 fit.mcmc.dic = stats.dic;
 fit.mcmc.Rhat = stats.Rhat;
