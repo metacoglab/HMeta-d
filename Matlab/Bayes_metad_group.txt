@@ -97,7 +97,7 @@ model {
     lambda_d1 <- pow(sigma_d1, -2)
     lambda_c <- pow(sigma_c, -2)
 
-	mu_c2 ~ dnorm(0, 0.01)
+	mu_c2 ~ dnorm(0, 0.01) I(0, )
 	sigma_c2 ~ dnorm(0, 0.01) I(0, )
 	lambda_c2 <- pow(sigma_c2, -2)
 

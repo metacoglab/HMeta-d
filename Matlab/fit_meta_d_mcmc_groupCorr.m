@@ -40,6 +40,10 @@ end
 Nsubj = length(nR_S1(1).counts);
 nRatings = length(nR_S1(1).counts{1})/2;
 
+if length(nR_S1(1).counts) ~= length(nR_S1(2).counts) || length(nR_S2(1).counts) ~= length(nR_S2(2).counts)
+    error('There are different numbers of subjects across the two conditions')
+end
+
 for n = 1:Nsubj
     for task = 1:2
         
