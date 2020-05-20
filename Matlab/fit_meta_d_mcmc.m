@@ -181,7 +181,7 @@ c1 = -0.5 .* (fninv(ratingHR(t1_index)) + fninv(ratingFAR(t1_index)));
 if ~exist('mcmc_params','var') || isempty(mcmc_params)
     % MCMC Parameters
     mcmc_params.response_conditional = 0;
-    mcmc_params.estimate_dprime = 1;    % also estimate dprime in same model?
+    mcmc_params.estimate_dprime = 0;    % also estimate dprime in same model?
     mcmc_params.nchains = 3; % How Many Chains?
     mcmc_params.nburnin = 1000; % How Many Burn-in Samples?
     mcmc_params.nsamples = 10000;  %How Many Recorded Samples?
