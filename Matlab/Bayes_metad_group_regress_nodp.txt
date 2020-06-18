@@ -74,11 +74,8 @@ model {
 	cS1[s,1:nratings-1] <- sort(cS1_raw[s, ])
 	cS2[s,1:nratings-1] <- sort(cS2_raw[s, ])
 
-    mratio_base[s] ~ dnorm(mu_logMratio, lambda_logMratio)
-    beta1[s] ~ dnorm(mu_beta1, lambda_beta1)
-    # beta2[s] ~ dnorm(mu_beta2, lambda_beta2)
-    # logMratio[s] <- mratio_base[s] + beta1[s]*cov[s,1] + beta2[s]*cov[s,2]
-    logMratio[s] <- mratio_base[s] + beta1[s]*cov[s]
+    mu_regression[s] <- mu_logMratio + mu_beta1*cov[s]
+    logMratio[s] ~ dnorm(mu_regression[s], tau)
     Mratio[s] <- exp(logMratio[s])
 
 	}
@@ -88,14 +85,8 @@ model {
 	sigma_c2 ~ dnorm(0, 0.01) I(0, )
 	lambda_c2 <- pow(sigma_c2, -2)
 
-    mu_logMratio ~ dnorm(0, 1)
-    sigma_logMratio ~ dnorm(0, 0.01) I(0, )
-    lambda_logMratio <- pow(sigma_logMratio, -2)
-    mu_beta1 ~ dnorm(0, 1)
-    sigma_beta1 ~ dnorm(0, 0.1) I(0, )
-    lambda_beta1 <- pow(sigma_beta1, -2)
-	# mu_beta2 ~ dnorm(0, 1)
-	# sigma_beta2 ~ dnorm(0, 0.1) I(0, )
-	# lambda_beta2 <- pow(sigma_beta2, -2)
+    	mu_logMratio ~ dnorm(0, 1)
+    	mu_beta1 ~ dnorm(0, 1)
+    	tau ~ dgamma(0.01, 0.01)
 
 }
