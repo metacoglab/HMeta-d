@@ -21,19 +21,19 @@ cwd = pwd;
 % Select model file and parameters to monitor
 if size(cov, 1) == 1
     model_file = 'Bayes_metad_group_regress_nodp.txt';
-    monitorparams = {'d1', 'c1', 'mu_logMratio', 'sigma_logMratio', 'mu_c2', 'sigma_c2', 'mu_beta1', 'sigma_beta1', 'Mratio', 'cS1', 'cS2'};
+    monitorparams = {'d1', 'c1', 'mu_logMratio', 'mu_c2', 'sigma_c2', 'mu_beta1', 'Mratio', 'tau', 'cS1', 'cS2'};
 elseif size(cov, 1) == 2
     model_file = 'Bayes_metad_group_regress_nodp_2cov.txt';
-    monitorparams = {'d1', 'c1', 'mu_logMratio', 'sigma_logMratio', 'mu_c2', 'sigma_c2', 'mu_beta1', 'sigma_beta1', 'mu_beta2', 'sigma_beta2', 'Mratio', 'cS1', 'cS2'};
+    monitorparams = {'d1', 'c1', 'mu_logMratio', 'mu_c2', 'sigma_c2', 'mu_beta1', 'mu_beta2', 'Mratio', 'tau', 'cS1', 'cS2'};
 elseif size(cov, 1) == 3
     model_file = 'Bayes_metad_group_regress_nodp_3cov.txt';
-    monitorparams = {'d1', 'c1', 'mu_logMratio', 'sigma_logMratio', 'mu_c2', 'sigma_c2', 'mu_beta1', 'sigma_beta1', 'mu_beta2', 'sigma_beta2', 'mu_beta3', 'sigma_beta3', 'Mratio', 'cS1', 'cS2'};
+    monitorparams = {'d1', 'c1', 'mu_logMratio', 'mu_c2', 'sigma_c2', 'mu_beta1', 'mu_beta2', 'mu_beta3', 'Mratio', 'tau', 'cS1', 'cS2'};
 elseif size(cov, 1) == 4
     model_file = 'Bayes_metad_group_regress_nodp_4cov.txt';
-    monitorparams = {'d1', 'c1', 'mu_logMratio', 'sigma_logMratio', 'mu_c2', 'sigma_c2', 'mu_beta1', 'sigma_beta1', 'mu_beta2', 'sigma_beta2', 'mu_beta3', 'sigma_beta3', 'mu_beta4', 'sigma_beta4', 'Mratio', 'cS1', 'cS2'};
+    monitorparams = {'d1', 'c1', 'mu_logMratio', 'mu_c2', 'sigma_c2', 'mu_beta1', 'mu_beta2', 'mu_beta3', 'mu_beta4', 'Mratio', 'tau', 'cS1', 'cS2'};
 elseif size(cov, 1) == 5
     model_file = 'Bayes_metad_group_regress_nodp_5cov.txt';
-    monitorparams = {'d1', 'c1', 'mu_logMratio', 'sigma_logMratio', 'mu_c2', 'sigma_c2', 'mu_beta1', 'sigma_beta1', 'mu_beta2', 'sigma_beta2', 'mu_beta3', 'sigma_beta3', 'mu_beta4', 'sigma_beta4', 'mu_beta5', 'sigma_beta5', 'Mratio', 'cS1', 'cS2'};
+    monitorparams = {'d1', 'c1', 'mu_logMratio', 'mu_c2', 'sigma_c2', 'mu_beta1', 'mu_beta2', 'mu_beta3', 'mu_beta4', 'mu_beta5', 'Mratio', 'tau', 'cS1', 'cS2'};
 else
     error('Too many covariates specified: Max = 5')
 end
@@ -160,25 +160,20 @@ fit.d1 = stats.mean.d1;
 fit.c1 = stats.mean.c1;
 
 fit.mu_logMratio = stats.mean.mu_logMratio;
-fit.sigma_logMratio = stats.mean.sigma_logMratio;
 fit.mu_beta1 = stats.mean.mu_beta1;
-fit.sigma_beta1 = stats.mean.sigma_beta1;
 if size(cov, 1) > 1
     fit.mu_beta2 = stats.mean.mu_beta2;
-    fit.sigma_beta2 = stats.mean.sigma_beta2;
 end
 if size(cov, 1) > 2
     fit.mu_beta3 = stats.mean.mu_beta3;
-    fit.sigma_beta3 = stats.mean.sigma_beta3;
 end
 if size(cov, 1) > 3
     fit.mu_beta4 = stats.mean.mu_beta4;
-    fit.sigma_beta4 = stats.mean.sigma_beta4;
 end
 if size(cov, 1) > 4
     fit.mu_beta5 = stats.mean.mu_beta5;
-    fit.sigma_beta5 = stats.mean.sigma_beta5;
 end
+fit.tau = stats.mean.tau;
 fit.Mratio = stats.mean.Mratio;
 fit.meta_d   = fit.Mratio.*stats.mean.d1;
 
