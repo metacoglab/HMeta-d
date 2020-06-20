@@ -81,7 +81,7 @@ model {
 	}
 	
   	# hyperpriors
-	mu_c2 ~ dnorm(0, 0.01) I(0, )
+	mu_c2 ~ dnorm(0, 0.01)
 	sigma_c2 ~ dnorm(0, 0.01) I(0, )
 	lambda_c2 <- pow(sigma_c2, -2)
 	
