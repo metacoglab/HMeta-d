@@ -74,19 +74,23 @@ model {
 	cS1[s,1:nratings-1] <- sort(cS1_raw[s, ])
 	cS2[s,1:nratings-1] <- sort(cS2_raw[s, ])
 
-    mu_regression[s] <- mu_logMratio + mu_beta1*cov[s]
-    logMratio[s] ~ dnorm(mu_regression[s], tau)
-    Mratio[s] <- exp(logMratio[s])
+    	delta[s] ~ dt(0, lambda_delta, 5)
+    	logMratio[s] <- mu_logMratio + mu_beta1*cov[s] + epsilon_logMratio*delta[s]
+    	Mratio[s] <- exp(logMratio[s])
 
 	}
-
+	
   	# hyperpriors
 	mu_c2 ~ dnorm(0, 0.01)
 	sigma_c2 ~ dnorm(0, 0.01) I(0, )
 	lambda_c2 <- pow(sigma_c2, -2)
-
+	
     	mu_logMratio ~ dnorm(0, 1)
     	mu_beta1 ~ dnorm(0, 1)
-    	tau ~ dgamma(0.01, 0.01)
+
+    	sigma_delta ~ dnorm(0, 1) I(0,)
+    	lambda_delta <- pow(sigma_delta, -2)
+    	epsilon_logMratio ~ dbeta(1,1)
+    	sigma_logMratio <- abs(epsilon_logMratio)*sigma_delta
 
 }
