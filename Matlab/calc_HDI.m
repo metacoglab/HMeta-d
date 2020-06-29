@@ -17,7 +17,7 @@ function hdi = calc_HDI(samples, q)
 %
 % Steve Fleming 2015 stephen.fleming@ucl.ac.uk
 
-if ~exist('q','var') || isempty(fninv)
+if ~exist('q','var') %|| isempty(fninv)
     q = 0.95;
 end
 

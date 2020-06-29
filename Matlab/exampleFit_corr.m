@@ -22,8 +22,8 @@ type2_sigma = 0.2;
 for i = 1:Nsub
         
         % Generate Mratios for this subject
-        bigSigma = [type2_sigma^2 0; 0 type2_sigma^2];
-        %bigSigma = [type2_sigma^2 rho.*type2_sigma^2; rho.*type2_sigma^2 type2_sigma^2];
+        %bigSigma = [type2_sigma^2 0; 0 type2_sigma^2];
+        bigSigma = [type2_sigma^2 rho.*type2_sigma^2; rho.*type2_sigma^2 type2_sigma^2];
         mratios(i,:) = mvnrnd([group_mratio group_mratio], bigSigma); 
         
         %% Task 1
