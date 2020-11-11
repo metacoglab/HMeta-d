@@ -15,68 +15,68 @@ data {
 }
 
 model {
-  for (s in 1:nsubj) {
-    for (i in 1:4){
+  	for (s in 1:nsubj) {
+    	for (i in 1:4){
     
-        ## TYPE 2 SDT MODEL (META-D)
-    	  # Multinomial likelihood for response counts ordered as c(nR_S1,nR_S2)
+			## TYPE 2 SDT MODEL (META-D)
+			# Multinomial likelihood for response counts ordered as c(nR_S1,nR_S2)
 
-        counts[s,1:(nratings),i] ~ dmulti(prT[s,1:(nratings),i],CR[s,i])
-        counts[s,(nratings+1):(nratings*2),i] ~ dmulti(prT[s,(nratings+1):(nratings*2),i],FA[s,i])
-        counts[s,(nratings*2+1):(nratings*3),i] ~ dmulti(prT[s,(nratings*2+1):(nratings*3),i],M[s,i])
-        counts[s,(nratings*3+1):(nratings*4),i] ~ dmulti(prT[s,(nratings*3+1):(nratings*4),i],H[s,i])
-        
-    		# Means of SDT distributions]
-    		mu[s,i] <- Mratio[s,i]*d1[s,i]
-    		S2mu[s,i] <- mu[s,i]/2
-    		S1mu[s,i] <- -mu[s,i]/2
-    
-    		# Calculate normalisation constants
-    		C_area_rS1[s,i] <- phi(c1[s,i] - S1mu[s,i])
-    		I_area_rS1[s,i] <- phi(c1[s,i] - S2mu[s,i])
-    		C_area_rS2[s,i] <- 1-phi(c1[s,i] - S2mu[s,i])
-    		I_area_rS2[s,i] <- 1-phi(c1[s,i] - S1mu[s,i])
-    
-    		# Get nC_rS1 probs
-    		pr[s,1,i] <- phi(cS1[s,1,i] - S1mu[s,i])/C_area_rS1[s,i]
-    		for (k in 1:(nratings-2)) {
-    			pr[s,(k+1),i] <- (phi(cS1[s,(k+1),i] - S1mu[s,i])-phi(cS1[s,k,i] - S1mu[s,i]))/C_area_rS1[s,i]
-    		}
-    		pr[s,(nratings),i] <- (phi(c1[s,i] - S1mu[s,i])-phi(cS1[s,(nratings-1),i] - S1mu[s,i]))/C_area_rS1[s,i]
-    
-    		# Get nI_rS2 probs
-    		pr[s,(nratings+1),i] <- ((1-phi(c1[s,i] - S1mu[s,i]))-(1-phi(cS2[s,1,i] - S1mu[s,i])))/I_area_rS2[s,i]
-    		for (k in 1:(nratings-2)) {
-    			pr[s,(nratings+1+k),i] <- ((1-phi(cS2[s,k,i] - S1mu[s,i]))-(1-phi(cS2[s,(k+1),i] - S1mu[s,i])))/I_area_rS2[s,i]
-    		}
-    		pr[s,(nratings*2),i] <- (1-phi(cS2[s,(nratings-1),i] - S1mu[s,i]))/I_area_rS2[s,i]
-    
-    		# Get nI_rS1 probs
-    		pr[s,(nratings*2+1), i] <- phi(cS1[s,1,i] - S2mu[s,i])/I_area_rS1[s,i]
-    		for (k in 1:(nratings-2)) {
-    			pr[s,(nratings*2+1+k),i] <- (phi(cS1[s,(k+1),i] - S2mu[s,i])-phi(cS1[s,k,i] - S2mu[s,i]))/I_area_rS1[s,i]
-    		}
-    		pr[s,(nratings*3),i] <- (phi(c1[s,i] - S2mu[s,i])-phi(cS1[s,(nratings-1),i] - S2mu[s,i]))/I_area_rS1[s,i]
-    
-    		# Get nC_rS2 probs
-    		pr[s,(nratings*3+1),i] <- ((1-phi(c1[s,i] - S2mu[s,i]))-(1-phi(cS2[s,1,i] - S2mu[s,i])))/C_area_rS2[s,i]
-    		for (k in 1:(nratings-2)) {
-    			pr[s,(nratings*3+1+k),i] <- ((1-phi(cS2[s,k,i] - S2mu[s,i]))-(1-phi(cS2[s,(k+1),i] - S2mu[s,i])))/C_area_rS2[s,i]
-    		}
-    		pr[s,(nratings*4),i] <- (1-phi(cS2[s,(nratings-1),i] - S2mu[s,i]))/C_area_rS2[s,i]
-    
-    		# Avoid underflow of probabilities
-    		for (ii in 1:(nratings*4)) {
-    			prT[s,ii,i] <- ifelse(pr[s,ii,i] < Tol, Tol, pr[s,ii,i])
-    		}
-    
-    		# Specify ordered prior on criteria (bounded above and below by Type 1 c)
-    		for (j in 1:(nratings-1)) {
-    			cS1_raw[s,j,i] ~ dnorm(-mu_c2, lambda_c2) T(,c1[s,i]-Tol)
-    			cS2_raw[s,j,i] ~ dnorm(mu_c2, lambda_c2) T(c1[s,i]+Tol,)
-    		}
-    		cS1[s,1:(nratings-1),i] <- sort(cS1_raw[s,1:(nratings-1),i])
-    		cS2[s,1:(nratings-1),i] <- sort(cS2_raw[s,1:(nratings-1),i])
+			counts[s,1:(nratings),i] ~ dmulti(prT[s,1:(nratings),i],CR[s,i])
+			counts[s,(nratings+1):(nratings*2),i] ~ dmulti(prT[s,(nratings+1):(nratings*2),i],FA[s,i])
+			counts[s,(nratings*2+1):(nratings*3),i] ~ dmulti(prT[s,(nratings*2+1):(nratings*3),i],M[s,i])
+			counts[s,(nratings*3+1):(nratings*4),i] ~ dmulti(prT[s,(nratings*3+1):(nratings*4),i],H[s,i])
+		
+			# Means of SDT distributions]
+			mu[s,i] <- Mratio[s,i]*d1[s,i]
+			S2mu[s,i] <- mu[s,i]/2
+			S1mu[s,i] <- -mu[s,i]/2
+
+			# Calculate normalisation constants
+			C_area_rS1[s,i] <- phi(c1[s,i] - S1mu[s,i])
+			I_area_rS1[s,i] <- phi(c1[s,i] - S2mu[s,i])
+			C_area_rS2[s,i] <- 1-phi(c1[s,i] - S2mu[s,i])
+			I_area_rS2[s,i] <- 1-phi(c1[s,i] - S1mu[s,i])
+
+			# Get nC_rS1 probs
+			pr[s,1,i] <- phi(cS1[s,1,i] - S1mu[s,i])/C_area_rS1[s,i]
+			for (k in 1:(nratings-2)) {
+				pr[s,(k+1),i] <- (phi(cS1[s,(k+1),i] - S1mu[s,i])-phi(cS1[s,k,i] - S1mu[s,i]))/C_area_rS1[s,i]
+			}
+			pr[s,(nratings),i] <- (phi(c1[s,i] - S1mu[s,i])-phi(cS1[s,(nratings-1),i] - S1mu[s,i]))/C_area_rS1[s,i]
+
+			# Get nI_rS2 probs
+			pr[s,(nratings+1),i] <- ((1-phi(c1[s,i] - S1mu[s,i]))-(1-phi(cS2[s,1,i] - S1mu[s,i])))/I_area_rS2[s,i]
+			for (k in 1:(nratings-2)) {
+				pr[s,(nratings+1+k),i] <- ((1-phi(cS2[s,k,i] - S1mu[s,i]))-(1-phi(cS2[s,(k+1),i] - S1mu[s,i])))/I_area_rS2[s,i]
+			}
+			pr[s,(nratings*2),i] <- (1-phi(cS2[s,(nratings-1),i] - S1mu[s,i]))/I_area_rS2[s,i]
+
+			# Get nI_rS1 probs
+			pr[s,(nratings*2+1), i] <- phi(cS1[s,1,i] - S2mu[s,i])/I_area_rS1[s,i]
+			for (k in 1:(nratings-2)) {
+				pr[s,(nratings*2+1+k),i] <- (phi(cS1[s,(k+1),i] - S2mu[s,i])-phi(cS1[s,k,i] - S2mu[s,i]))/I_area_rS1[s,i]
+			}
+			pr[s,(nratings*3),i] <- (phi(c1[s,i] - S2mu[s,i])-phi(cS1[s,(nratings-1),i] - S2mu[s,i]))/I_area_rS1[s,i]
+
+			# Get nC_rS2 probs
+			pr[s,(nratings*3+1),i] <- ((1-phi(c1[s,i] - S2mu[s,i]))-(1-phi(cS2[s,1,i] - S2mu[s,i])))/C_area_rS2[s,i]
+			for (k in 1:(nratings-2)) {
+				pr[s,(nratings*3+1+k),i] <- ((1-phi(cS2[s,k,i] - S2mu[s,i]))-(1-phi(cS2[s,(k+1),i] - S2mu[s,i])))/C_area_rS2[s,i]
+			}
+			pr[s,(nratings*4),i] <- (1-phi(cS2[s,(nratings-1),i] - S2mu[s,i]))/C_area_rS2[s,i]
+
+			# Avoid underflow of probabilities
+			for (ii in 1:(nratings*4)) {
+				prT[s,ii,i] <- ifelse(pr[s,ii,i] < Tol, Tol, pr[s,ii,i])
+			}
+
+			# Specify ordered prior on criteria (bounded above and below by Type 1 c)
+			for (j in 1:(nratings-1)) {
+				cS1_raw[s,j,i] ~ dnorm(-mu_c2, lambda_c2) T(,c1[s,i]-Tol)
+				cS2_raw[s,j,i] ~ dnorm(mu_c2, lambda_c2) T(c1[s,i]+Tol,)
+			}
+			cS1[s,1:(nratings-1),i] <- sort(cS1_raw[s,1:(nratings-1),i])
+			cS2[s,1:(nratings-1),i] <- sort(cS2_raw[s,1:(nratings-1),i])
 
 			mu_regression[s,i] <- dbase[s] + Bd_Condition1[s]*Condition1[i] + Bd_Condition2[s]*Condition2[i] + Bd_interaction[s]*Interaction[i]
 			logMratio[s,i] ~ dnorm(mu_regression[s,i], tau[s])
@@ -111,6 +111,6 @@ model {
 	sigD_Condition2 <- 1/sqrt(lamBd_Condition2)
 	
 	muBd_interaction ~ dnorm(0,.001)
-	lamBd_interaction ~ dgamma(.001,.001)
+	lamBd_interaction ~ dnorm(0, 0.1) I(0, )
 	sigD_interaction <- 1/sqrt(lamBd_interaction)
 }
