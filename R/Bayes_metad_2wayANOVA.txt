@@ -111,6 +111,7 @@ model {
 	sigD_Condition2 <- 1/sqrt(lamBd_Condition2)
 	
 	muBd_interaction ~ dnorm(0,.001)
-	lamBd_interaction ~ dnorm(0, 0.1) I(0, )
+	sigma_interaction ~ dnorm(0, 0.1) I(0, )
+	lamBd_interaction <- pow(sigma_interaction, -2)
 	sigD_interaction <- 1/sqrt(lamBd_interaction)
 }
