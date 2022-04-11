@@ -38,8 +38,8 @@ nR_S1 <- list(nR_S1)
 nR_S2 <- list(nR_S2)
 
 # Fit all data at once
-source("Function_metad_group.R")
-output <- metad_group(nR_S1 = nR_S1, nR_S2 = nR_S2)
+source("fit_metad_group.R")
+output <- fit_metad_group(nR_S1 = nR_S1, nR_S2 = nR_S2)
 
 ## Model output ------------------------------------------------------------
 

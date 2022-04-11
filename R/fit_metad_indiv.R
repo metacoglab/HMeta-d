@@ -36,7 +36,7 @@ library(broom)
 library(ggpubr)
 library(ggmcmc)
 
-metad_indiv <- function (nR_S1, nR_S2) {
+fit_metad_indiv <- function (nR_S1, nR_S2) {
 
   Tol <- 1e-05
   nratings <- length(nR_S1)/2

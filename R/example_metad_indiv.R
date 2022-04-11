@@ -23,8 +23,8 @@ nR_S1 <- c(52,32,35,37,26,12,4,2)
 nR_S2 <- c(2,5,15,22,33,38,40,45)
 
 ## Individual meta_d function ------------------------------------------------------
-source("Function_metad_indiv.R")
-output <- metad_indiv(nR_S1 = nR_S1, nR_S2 = nR_S2)
+source("fit_metad_indiv.R")
+output <- fit_metad_indiv(nR_S1 = nR_S1, nR_S2 = nR_S2)
 
 ## Model output ------------------------------------------------------------
 

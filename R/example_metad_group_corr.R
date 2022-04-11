@@ -53,8 +53,8 @@ nR_S2 <- list(nR_S2_1,
               nR_S2_2)
 
 # Fit all data at once
-source("Function_metad_groupcorr.R")
-output <- metad_groupcorr(nR_S1 = nR_S1, nR_S2 = nR_S2)
+source("fit_metad_groupcorr.R")
+output <- fit_metad_groupcorr(nR_S1 = nR_S1, nR_S2 = nR_S2)
 
 ## Model output ------------------------------------------------------------
 

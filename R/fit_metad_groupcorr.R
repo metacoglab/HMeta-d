@@ -37,7 +37,7 @@ library(broom)
 library(ggpubr)
 library(ggmcmc)
 
-metad_groupcorr <- function (nR_S1, nR_S2) {
+fit_metad_groupcorr <- function (nR_S1, nR_S2) {
   
   # Type 1 parameters
   nTot <- sum(nR_S1[[1]]$V1, nR_S2[[1]]$V1)

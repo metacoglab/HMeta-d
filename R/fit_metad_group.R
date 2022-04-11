@@ -21,7 +21,7 @@
 # nR_S1 and nR_S2 should be two vectors
 # model output is a large mcmc list and two vectors for d1 and c1
 #
-# AM 2018
+# Audrey Mazancieux 2018
 
 #####################################
 
@@ -36,7 +36,7 @@ library(broom)
 library(ggpubr)
 library(ggmcmc)
 
-metad_group <- function (nR_S1, nR_S2) {
+fit_metad_group <- function (nR_S1, nR_S2) {
   
   # Type 1 parameters
   nTot <- sum(nR_S1[[1]]$V1, nR_S2[[1]]$V1)
