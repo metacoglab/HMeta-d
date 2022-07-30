@@ -84,7 +84,7 @@ fit_metad_indiv <- function (nR_S1, nR_S2) {
       variable.names = c("meta_d", "cS1", "cS2"),
       n.iter         = 10000,
       thin           = 1 )
-    
+  
+  return(output)
+  
   }
-
-return(output)
