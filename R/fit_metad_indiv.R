@@ -56,6 +56,7 @@ fit_metad_indiv <- function (nR_S1, nR_S2) {
   counts <- as.vector(counts)
   
   # Data preparation for model
+<<<<<<< HEAD
   data <- list(
     d1 = d1,
     c1 = c1,
@@ -81,3 +82,29 @@ fit_metad_indiv <- function (nR_S1, nR_S2) {
   
   return(output)
 }
+=======
+    data <- list(
+      d1 = d1,
+      c1 = c1,
+      counts = counts,
+      nratings = nratings,
+      Tol = Tol
+    )
+    
+    ## Model using JAGS
+    # Create and update model
+    model <- jags.model(file = 'Bayes_metad_indiv_R.txt', data = data,
+                            n.chains = 3, quiet=FALSE)
+    update(model, n.iter=1000)
+    
+    # Sampling
+    output <- coda.samples( 
+      model          = model,
+      variable.names = c("meta_d", "cS1", "cS2"),
+      n.iter         = 10000,
+      thin           = 1 )
+  
+  return(output)
+  
+  }
+>>>>>>> 7c36ee71705e0fcb8cb6616ad3adbe4330d01820
