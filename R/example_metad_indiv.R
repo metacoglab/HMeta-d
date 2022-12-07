@@ -10,12 +10,8 @@
 ## Packages ----------------------------------------------------------------
 library(tidyverse)
 library(magrittr)
-library(reshape2)
 library(rjags)
 library(coda)
-library(lattice)
-library(broom)
-library(ggpubr)
 library(ggmcmc)
 
 ## Create data for 1 participant -------------------------------------------------------------
@@ -24,9 +20,11 @@ nR_S2 <- c(2,5,15,22,33,38,40,45)
 
 ## Individual meta_d function ------------------------------------------------------
 source("fit_metad_indiv.R")
-output <- fit_metad_indiv(nR_S1 = nR_S1, nR_S2 = nR_S2)
+fit <- fit_metad_indiv(nR_S1 = nR_S1, nR_S2 = nR_S2)
 
 ## Model output ------------------------------------------------------------
+output = fit[[1]]
+d1 = fit[[2]]$d1
 
 # Mean values 
 Value <- summary(output)
@@ -56,7 +54,7 @@ traceplot(output)
 # mcmc values in df for plot posterior distributions
 mcmc.sample <- ggs(output)
 
-# Plot posterior distribution for rho value
+# Plot posterior distribution for meta-d value
 Plot <- mcmc.sample %>%
   filter(Parameter == "meta_d") %>% 
   ggplot(aes(value)) +

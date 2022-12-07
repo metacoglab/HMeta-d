@@ -36,7 +36,6 @@ for i = 1:Nsub
 end
 
 %% Regression fit
-% fit = fit_meta_d_mcmc_group(nR_S1, nR_S2, mcmc_params);
 fit = fit_meta_d_mcmc_regression(nR_S1, nR_S2, cov, mcmc_params);
 
 % % Call plotSamples to plot posterior of group Mratio
