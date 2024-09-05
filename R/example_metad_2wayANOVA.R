@@ -71,7 +71,7 @@
   # Model -------------------------------------------------------------------
   
   # Fit all data at once
-  source("Function_metad_2wayANOVA.R")
+  source("fit_metad_2wayANOVA.R")
   output <- metad_2wayANOVA(nR_S1 = nR_S1, nR_S2 = nR_S2)
   
   ## Summary stats --------------------------------------------------
