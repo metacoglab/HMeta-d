@@ -92,8 +92,10 @@ Rho_plot <- mcmc.sample %>%
   filter(Parameter == "rho") %>% 
   ggplot(aes(value)) +
   geom_histogram(binwidth = 0.03, fill = "blue", colour = "grey", alpha = 0.5) +
-  geom_vline(xintercept = stat$mean[stat$name == "rho"],linetype="dashed", size = 1.5) +
-  geom_segment(aes(x = HDI$lower[HDI$name == "rho"], y = 50, xend = HDI$upper[HDI$name == "rho"], yend = 50), colour = "white", size = 2.5) +
+  geom_vline(xintercept = stat$mean[stat$name == "rho"],linetype="dashed", linewidth = 1.5) +
+  annotate("segment", x = HDI$lower[HDI$name == "rho"], y = 50, 
+           xend = HDI$upper[HDI$name == "rho"], yend = 50, 
+           colour = "white", linewidth = 2.5) +
   xlim(c(-1, 1)) +
   ylab("Sample count") +
   xlab(expression(paste(rho, " value")))
