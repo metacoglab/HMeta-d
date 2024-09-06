@@ -59,8 +59,10 @@ Plot <- mcmc.sample %>%
   filter(Parameter == "meta_d") %>% 
   ggplot(aes(value)) +
   geom_histogram(binwidth = 0.03, fill = "blue", colour = "grey", alpha = 0.5) +
-  geom_vline(xintercept = stat$mean[stat$name == "meta_d"],linetype="dashed", size = 1.5) +
-  geom_segment(aes(x = HDI$lower[HDI$name == "meta_d"], y = 50, xend = HDI$upper[HDI$name == "meta_d"], yend = 50), colour = "white", size = 2.5) +
+  geom_vline(xintercept = stat$mean[stat$name == "meta_d"],linetype="dashed", linewidth= 1.5) +
+  annotate("segment", x = HDI$lower[HDI$name == "meta_d"], y = 50, 
+           xend = HDI$upper[HDI$name == "meta_d"],
+           yend = 50, colour = "white", linewidth = 2.5) +
   ylab("Sample count") +
   xlab(expression(paste("Meta d'")))
 
