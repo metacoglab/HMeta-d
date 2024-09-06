@@ -77,9 +77,12 @@ Mratio_plot <- mcmc.sample %>%
   filter(Parameter == "mu_logMratio") %>% 
   ggplot(aes(exp(value))) +
   geom_histogram(binwidth = 0.03, fill = "blue", colour = "grey", alpha = 0.5) +
-  geom_vline(xintercept = exp(stat$mean[stat$name == "mu_logMratio"]),linetype="dashed", size = 1.5) +
-  geom_segment(aes(x = exp(HDI$lower[HDI$name == "mu_logMratio"]), y = 50, xend = exp(HDI$upper[HDI$name == "mu_logMratio"]), yend = 50), colour = "white", size = 2.5) +
+  geom_vline(xintercept = exp(stat$mean[stat$name == "mu_logMratio"]), linetype = "dashed", linewidth = 1.5) +
+  annotate("segment", x = exp(HDI$lower[HDI$name == "mu_logMratio"]), y = 50, 
+                   xend = exp(HDI$upper[HDI$name == "mu_logMratio"]), yend = 50, 
+               colour = "white", linewidth = 2.5) +
   ylab("Sample count") +
   xlab(expression(paste(mu, " Mratio")))
+
 
 Mratio_plot
