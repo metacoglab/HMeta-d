@@ -2,7 +2,7 @@
 HMeta-d
 ===
 
-> ⚠️ **This repository is deprecated. This toolbox is now superseded by our new `R` package, [hmetad](https://metacoglab.github.io/hmetad) ⚠️
+> ⚠️ **This repository is deprecated ⚠️ This toolbox is now superseded by our new `R` package, [hmetad](https://metacoglab.github.io/hmetad)
 > While MATLAB users can continue to use this toolbox, for most users we recommend using the `R` package instead, since it has a friendlier interface and supports a wider range of model specifications. This repository is preserved for reproducibility of past projects. No new features will be added.
 > For more information about the history of the meta-d' model, see [here](https://metacoglab.github.io/hmetad/articles/history.html).**
 
