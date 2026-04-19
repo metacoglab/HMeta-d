@@ -1,5 +1,8 @@
+
 HMeta-d
 ===
+
+> **This toolbox is now superseded by our new `R` package, [hmetad](https://metacoglab.github.io/hmetad). While MATLAB users can continue to use this toolbox, for most users we recommend using the `R` package instead, since it has a friendlier interface and supports a wider range of model specifications. For more information about the history of the meta-d' model, see [here](https://metacoglab.github.io/hmetad/articles/history.html).**
 
 **Hierarchical meta-d' model (HMeta-d)**
 
